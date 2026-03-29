@@ -22,6 +22,6 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "AppelloIntermedio-PSE"
+rootProject.name = "PSE-AppelloIntermedio"
 include(":app")
  

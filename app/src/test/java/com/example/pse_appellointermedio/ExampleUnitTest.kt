@@ -1,4 +1,4 @@
-package com.example.appellointermedio_pse
+package com.example.pse_appellointermedio
 
 import org.junit.Test
 

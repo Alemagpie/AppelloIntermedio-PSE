@@ -1,3 +1,4 @@
 <resources>
-    <string name="app_name">AppelloIntermedio-PSE</string>
+    <string name="app_name">PSE-AppelloIntermedio</string>
+    <string name="emptyChar"> </string>
 </resources>

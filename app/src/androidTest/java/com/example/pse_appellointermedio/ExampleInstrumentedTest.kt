@@ -1,4 +1,4 @@
-package com.example.appellointermedio_pse
+package com.example.pse_appellointermedio
 
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -19,6 +19,6 @@ class ExampleInstrumentedTest {
     fun useAppContext() {
         // Context of the app under test.
         val appContext = InstrumentationRegistry.getInstrumentation().targetContext
-        assertEquals("com.example.appellointermedio_pse", appContext.packageName)
+        assertEquals("com.example.pse_appellointermedio", appContext.packageName)
     }
 }
