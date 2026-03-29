@@ -40,8 +40,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             PSEAppelloIntermedioTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "Android",
+                    ColorGrid(
                         modifier = Modifier.padding(innerPadding)
                     )
                 }
@@ -50,16 +49,9 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
 
 @Composable
-fun ColorGrid() {
+fun ColorGrid(modifier: Modifier = Modifier) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -130,11 +122,30 @@ fun ColorGrid() {
 }
 
 @Composable
-fun SequenceText() {
+fun SequenceText(modifier: Modifier = Modifier) {
 
 }
 
 @Composable
-fun BottomButtons() {
+fun BottomButtons(modifier: Modifier = Modifier) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceEvenly
+    ) {
+        Button(
+            onClick = { },
+            colors = ButtonDefaults.buttonColors(containerColor = boxY),
+            modifier = Modifier.size(width =  50.dp, height = 100.dp)
+        ) {
+            Text(stringResource(R.string.cancellaBtn))
+        };
 
+        Button(
+            onClick = { },
+            colors = ButtonDefaults.buttonColors(containerColor = boxY),
+            modifier = Modifier.size(width =  50.dp, height = 100.dp)
+        ) {
+            Text(stringResource(R.string.fine-partitaBtn))
+        };
+    }
 }
