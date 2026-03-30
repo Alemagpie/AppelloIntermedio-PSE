@@ -145,7 +145,7 @@ fun BottomButtons(modifier: Modifier = Modifier) {
             colors = ButtonDefaults.buttonColors(containerColor = boxY),
             modifier = Modifier.size(width =  50.dp, height = 100.dp)
         ) {
-            Text(stringResource(R.string.fine-partitaBtn))
+            Text(stringResource(R.string.finePartitaBtn))
         };
     }
 }
