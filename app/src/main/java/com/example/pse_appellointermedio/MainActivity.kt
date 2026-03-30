@@ -19,6 +19,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -40,7 +41,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             PSEAppelloIntermedioTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    ColorGrid(
+                    aaa(
                         modifier = Modifier.padding(innerPadding)
                     )
                 }
@@ -49,23 +50,117 @@ class MainActivity : ComponentActivity() {
     }
 }
 
+@Composable
+fun aaa(modifier: Modifier = Modifier) {
+    Column {
+        Row(
+            // Use the passed-in modifier for the Row
+            modifier = modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceEvenly
+        ) {
+            Button(
+                onClick = { },
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = boxR,
+                    contentColor = Color.Black
+                ),
+                // Use Uppercase 'Modifier' here so it doesn't inherit 'fillMaxWidth'
+                modifier = Modifier.size(width = 80.dp, height = 80.dp)
+            ) {
+                Text(stringResource(R.string.emptyChar))
+            }
+
+            Button(
+                onClick = { },
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = boxG,
+                    contentColor = Color.Black
+                ),
+                // Use Uppercase 'Modifier' here as well
+                modifier = Modifier.size(width = 80.dp, height = 80.dp)
+            ) {
+                Text(stringResource(R.string.emptyChar))
+            }
+        }
+
+        Row(
+            // Use the passed-in modifier for the Row
+            modifier = modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceEvenly
+        ) {
+            Button(
+                onClick = { },
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = boxB,
+                    contentColor = Color.Black
+                ),
+                // Use Uppercase 'Modifier' here so it doesn't inherit 'fillMaxWidth'
+                modifier = Modifier.size(width = 80.dp, height = 80.dp)
+            ) {
+                Text(stringResource(R.string.emptyChar))
+            }
+
+            Button(
+                onClick = { },
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = boxM,
+                    contentColor = Color.Black
+                ),
+                // Use Uppercase 'Modifier' here as well
+                modifier = Modifier.size(width = 80.dp, height = 80.dp)
+            ) {
+                Text(stringResource(R.string.emptyChar))
+            }
+        }
+
+        Row(
+            // Use the passed-in modifier for the Row
+            modifier = modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceEvenly
+        ) {
+            Button(
+                onClick = { },
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = boxY,
+                    contentColor = Color.Black
+                ),
+                // Use Uppercase 'Modifier' here so it doesn't inherit 'fillMaxWidth'
+                modifier = Modifier.size(width = 80.dp, height = 80.dp)
+            ) {
+                Text(stringResource(R.string.emptyChar))
+            }
+
+            Button(
+                onClick = { },
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = boxC,
+                    contentColor = Color.Black
+                ),
+                // Use Uppercase 'Modifier' here as well
+                modifier = Modifier.size(width = 80.dp, height = 80.dp)
+            ) {
+                Text(stringResource(R.string.emptyChar))
+            }
+        }
+    }
+}
 
 @Composable
 fun ColorGrid(modifier: Modifier = Modifier) {
     Column(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxSize()
             .padding(16.dp),
         verticalArrangement = Arrangement.Top
     ) {
         Row(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceEvenly
         ) {
             Button(
                 onClick = { },
                 colors = ButtonDefaults.buttonColors(containerColor = boxR),
-                modifier = Modifier.size(width =  80.dp, height = 80.dp)
+                modifier = modifier.size(width =  80.dp, height = 80.dp)
             ) {
                 Text(stringResource(R.string.emptyChar))
             };
@@ -73,19 +168,19 @@ fun ColorGrid(modifier: Modifier = Modifier) {
             Button(
                 onClick = { },
                 colors = ButtonDefaults.buttonColors(containerColor = boxG),
-                modifier = Modifier.size(width =  80.dp, height = 80.dp)
+                modifier = modifier.size(width =  80.dp, height = 80.dp)
             ) {
                 Text(stringResource(R.string.emptyChar))
             }
         }
         Row(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceEvenly
         ) {
             Button(
                 onClick = { },
                 colors = ButtonDefaults.buttonColors(containerColor = boxB),
-                modifier = Modifier.size(width =  80.dp, height = 80.dp)
+                modifier = modifier.size(width =  80.dp, height = 80.dp)
             ) {
                 Text(stringResource(R.string.emptyChar))
             };
@@ -93,19 +188,19 @@ fun ColorGrid(modifier: Modifier = Modifier) {
             Button(
                 onClick = { },
                 colors = ButtonDefaults.buttonColors(containerColor = boxM),
-                modifier = Modifier.size(width =  80.dp, height = 80.dp)
+                modifier = modifier.size(width =  80.dp, height = 80.dp)
             ) {
                 Text(stringResource(R.string.emptyChar))
             }
         }
         Row(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceEvenly
         ) {
             Button(
                 onClick = { },
                 colors = ButtonDefaults.buttonColors(containerColor = boxY),
-                modifier = Modifier.size(width =  80.dp, height = 80.dp)
+                modifier = modifier.size(width =  80.dp, height = 80.dp)
             ) {
                 Text(stringResource(R.string.emptyChar))
             };
@@ -113,7 +208,7 @@ fun ColorGrid(modifier: Modifier = Modifier) {
             Button(
                 onClick = { },
                 colors = ButtonDefaults.buttonColors(containerColor = boxC),
-                modifier = Modifier.size(width =  80.dp, height = 80.dp)
+                modifier = modifier.size(width =  80.dp, height = 80.dp)
             ) {
                 Text(stringResource(R.string.emptyChar))
             }

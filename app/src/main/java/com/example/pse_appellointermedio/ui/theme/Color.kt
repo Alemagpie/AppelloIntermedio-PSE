@@ -16,14 +16,14 @@ val bgPrimary = Color(0x262626)
 val primary = Color(0xBEBEBE)
 
 //Button grid
-val boxR = Color(0xCC1821)
-val boxG = Color(0x21CC18)
-val boxB = Color(0x182DCC)
-val boxM = Color(0xFF00FF)
-val boxY = Color(0xD4D433)
-val boxC = Color(0x32D1D1)
+val boxR = Color(0xFFCC1821)
+val boxG = Color(0xFF21CC18)
+val boxB = Color(0xFF182DCC)
+val boxM = Color(0xFFFF00FF)
+val boxY = Color(0xFFD4D433)
+val boxC = Color(0xFF32D1D1)
 
 //Action buttons
-val cancBtn = Color(0xA8A8A8)
-val fineBtn = Color(0x73A9FF)
-val btnTxt = Color(0x0A0A0A)
+val cancBtn = Color(0xFFA8A8A8)
+val fineBtn = Color(0xFF73A9FF)
+val btnTxt = Color(0xFF0A0A0A)
