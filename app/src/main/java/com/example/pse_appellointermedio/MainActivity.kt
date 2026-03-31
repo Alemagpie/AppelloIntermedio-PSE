@@ -7,10 +7,13 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ButtonDefaults
@@ -18,6 +21,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
@@ -32,6 +36,12 @@ import com.example.pse_appellointermedio.ui.theme.boxY
 import com.example.pse_appellointermedio.ui.theme.boxC
 
 
+val mainTopPadding = 50.dp
+val spacerHeight = 20.dp
+val btnSize = 100.dp
+val btnSpacing = 10.dp
+val btnRadius = 8.dp
+val matrixTopPadding = 60.dp
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -41,7 +51,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             PSEAppelloIntermedioTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    aaa(
+                    MainUI(
                         modifier = Modifier.padding(innerPadding)
                     )
                 }
@@ -50,13 +60,52 @@ class MainActivity : ComponentActivity() {
     }
 }
 
+
 @Composable
-fun aaa(modifier: Modifier = Modifier) {
-    Column {
+fun MainUI(modifier: Modifier = Modifier) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(top = mainTopPadding),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Top
+    ) {
+        Title()
+
+        Spacer(modifier = Modifier.height(spacerHeight))
+
+        ColorGrid()
+
+        //Spacer(modifier = Modifier.height(20.dp))
+
+        SequenceText()
+    }
+}
+
+@Composable
+fun Title(modifier: Modifier = Modifier) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth(),
+        horizontalArrangement = Arrangement.Center
+    ) {
+        Text("PSE - Appello intermedio")
+    }
+}
+
+@Composable
+fun ColorGrid(modifier: Modifier = Modifier) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(top = matrixTopPadding),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(btnSpacing)
+    ) {
         Row(
             // Use the passed-in modifier for the Row
-            modifier = modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceEvenly
+            //modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(btnSpacing)
         ) {
             Button(
                 onClick = { },
@@ -64,10 +113,13 @@ fun aaa(modifier: Modifier = Modifier) {
                     containerColor = boxR,
                     contentColor = Color.Black
                 ),
+                shape = RoundedCornerShape(btnRadius),
                 // Use Uppercase 'Modifier' here so it doesn't inherit 'fillMaxWidth'
-                modifier = Modifier.size(width = 80.dp, height = 80.dp)
+                modifier = Modifier
+                    .size(btnSize)
+                   // .padding( 8.dp)
             ) {
-                Text(stringResource(R.string.emptyChar))
+                Text("")
             }
 
             Button(
@@ -76,17 +128,20 @@ fun aaa(modifier: Modifier = Modifier) {
                     containerColor = boxG,
                     contentColor = Color.Black
                 ),
-                // Use Uppercase 'Modifier' here as well
-                modifier = Modifier.size(width = 80.dp, height = 80.dp)
+                shape = RoundedCornerShape(btnRadius),
+                // Use Uppercase 'Modifier' here so it doesn't inherit 'fillMaxWidth'
+                modifier = Modifier
+                    .size(btnSize)
+                   // .padding(8.dp)
             ) {
-                Text(stringResource(R.string.emptyChar))
+                Text("")
             }
         }
 
         Row(
             // Use the passed-in modifier for the Row
-            modifier = modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceEvenly
+            //modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(btnSpacing)
         ) {
             Button(
                 onClick = { },
@@ -94,10 +149,13 @@ fun aaa(modifier: Modifier = Modifier) {
                     containerColor = boxB,
                     contentColor = Color.Black
                 ),
+                shape = RoundedCornerShape(btnRadius),
                 // Use Uppercase 'Modifier' here so it doesn't inherit 'fillMaxWidth'
-                modifier = Modifier.size(width = 80.dp, height = 80.dp)
+                modifier = Modifier
+                    .size(btnSize)
+                   // .padding(8.dp)
             ) {
-                Text(stringResource(R.string.emptyChar))
+                Text("")
             }
 
             Button(
@@ -106,17 +164,20 @@ fun aaa(modifier: Modifier = Modifier) {
                     containerColor = boxM,
                     contentColor = Color.Black
                 ),
-                // Use Uppercase 'Modifier' here as well
-                modifier = Modifier.size(width = 80.dp, height = 80.dp)
+                shape = RoundedCornerShape(btnRadius),
+                // Use Uppercase 'Modifier' here so it doesn't inherit 'fillMaxWidth'
+                modifier = Modifier
+                    .size(btnSize)
+                   // .padding(8.dp)
             ) {
-                Text(stringResource(R.string.emptyChar))
+                Text("")
             }
         }
 
         Row(
             // Use the passed-in modifier for the Row
-            modifier = modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceEvenly
+            //modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(btnSpacing)
         ) {
             Button(
                 onClick = { },
@@ -124,10 +185,13 @@ fun aaa(modifier: Modifier = Modifier) {
                     containerColor = boxY,
                     contentColor = Color.Black
                 ),
+                shape = RoundedCornerShape(btnRadius),
                 // Use Uppercase 'Modifier' here so it doesn't inherit 'fillMaxWidth'
-                modifier = Modifier.size(width = 80.dp, height = 80.dp)
+                modifier = Modifier
+                    .size(btnSize)
+                   // .padding(8.dp)
             ) {
-                Text(stringResource(R.string.emptyChar))
+                Text("")
             }
 
             Button(
@@ -136,89 +200,28 @@ fun aaa(modifier: Modifier = Modifier) {
                     containerColor = boxC,
                     contentColor = Color.Black
                 ),
-                // Use Uppercase 'Modifier' here as well
-                modifier = Modifier.size(width = 80.dp, height = 80.dp)
+                shape = RoundedCornerShape(btnRadius),
+                // Use Uppercase 'Modifier' here so it doesn't inherit 'fillMaxWidth'
+                modifier = Modifier
+                    .size(btnSize)
+                  //  .padding(8.dp)
             ) {
-                Text(stringResource(R.string.emptyChar))
+                Text("")
             }
         }
     }
 }
 
-@Composable
-fun ColorGrid(modifier: Modifier = Modifier) {
-    Column(
-        modifier = modifier
-            .fillMaxSize()
-            .padding(16.dp),
-        verticalArrangement = Arrangement.Top
-    ) {
-        Row(
-            modifier = modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceEvenly
-        ) {
-            Button(
-                onClick = { },
-                colors = ButtonDefaults.buttonColors(containerColor = boxR),
-                modifier = modifier.size(width =  80.dp, height = 80.dp)
-            ) {
-                Text(stringResource(R.string.emptyChar))
-            };
-
-            Button(
-                onClick = { },
-                colors = ButtonDefaults.buttonColors(containerColor = boxG),
-                modifier = modifier.size(width =  80.dp, height = 80.dp)
-            ) {
-                Text(stringResource(R.string.emptyChar))
-            }
-        }
-        Row(
-            modifier = modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceEvenly
-        ) {
-            Button(
-                onClick = { },
-                colors = ButtonDefaults.buttonColors(containerColor = boxB),
-                modifier = modifier.size(width =  80.dp, height = 80.dp)
-            ) {
-                Text(stringResource(R.string.emptyChar))
-            };
-
-            Button(
-                onClick = { },
-                colors = ButtonDefaults.buttonColors(containerColor = boxM),
-                modifier = modifier.size(width =  80.dp, height = 80.dp)
-            ) {
-                Text(stringResource(R.string.emptyChar))
-            }
-        }
-        Row(
-            modifier = modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceEvenly
-        ) {
-            Button(
-                onClick = { },
-                colors = ButtonDefaults.buttonColors(containerColor = boxY),
-                modifier = modifier.size(width =  80.dp, height = 80.dp)
-            ) {
-                Text(stringResource(R.string.emptyChar))
-            };
-
-            Button(
-                onClick = { },
-                colors = ButtonDefaults.buttonColors(containerColor = boxC),
-                modifier = modifier.size(width =  80.dp, height = 80.dp)
-            ) {
-                Text(stringResource(R.string.emptyChar))
-            }
-        }
-    }
-}
 
 @Composable
 fun SequenceText(modifier: Modifier = Modifier) {
-
+    Row(
+        modifier = Modifier
+        .fillMaxWidth(),
+        horizontalArrangement = Arrangement.Center
+    ) {
+        Text("This is the sequence")
+    }
 }
 
 @Composable
