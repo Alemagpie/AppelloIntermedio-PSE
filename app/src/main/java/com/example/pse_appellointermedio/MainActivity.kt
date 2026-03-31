@@ -43,8 +43,10 @@ import com.example.pse_appellointermedio.ui.theme.cancBtn
 import com.example.pse_appellointermedio.ui.theme.fineBtn
 
 
-val mainTopPadding = 70.dp
-val btnSize = 100.dp
+val mainTopPadding_port = 70.dp
+val mainTopPadding_land = 35.dp
+val btnSize_port = 100.dp
+val btnSize_land = 75.dp
 val btnSpacing = 10.dp
 val btnRadius = 8.dp
 val matrixTopPadding = 60.dp
@@ -74,12 +76,21 @@ fun MainUI(modifier: Modifier = Modifier) {
     val configuration = LocalConfiguration.current
 
     if(configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(top = mainTopPadding_land)
+        ) {
+            Title_land()
+            ColorGrid_land()
 
+            SequenceText_land()
+        }
     } else {
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(top = mainTopPadding),
+                .padding(top = mainTopPadding_port),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Top
         ) {
@@ -119,7 +130,19 @@ fun Title_port(modifier: Modifier = Modifier) {
 
 @Composable
 fun Title_land(modifier: Modifier = Modifier) {
-
+    Row(
+        modifier = Modifier
+            .fillMaxWidth(),
+        horizontalArrangement = Arrangement.Center
+    ) {
+        Text(
+            text = "PSE - APPELLO INTERMEDIO",
+            style = TextStyle(
+                fontWeight = FontWeight.Bold,
+                fontSize = 20.sp
+            )
+        )
+    }
 }
 
 @Composable
@@ -132,8 +155,6 @@ fun ColorGrid_port(modifier: Modifier = Modifier) {
         verticalArrangement = Arrangement.spacedBy(btnSpacing)
     ) {
         Row(
-            // Use the passed-in modifier for the Row
-            //modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(btnSpacing)
         ) {
             Button(
@@ -143,10 +164,8 @@ fun ColorGrid_port(modifier: Modifier = Modifier) {
                     contentColor = Color.Black
                 ),
                 shape = RoundedCornerShape(btnRadius),
-                // Use Uppercase 'Modifier' here so it doesn't inherit 'fillMaxWidth'
                 modifier = Modifier
-                    .size(btnSize)
-                   // .padding( 8.dp)
+                    .size(btnSize_port)
             ) {
                 Text("")
             }
@@ -158,18 +177,14 @@ fun ColorGrid_port(modifier: Modifier = Modifier) {
                     contentColor = Color.Black
                 ),
                 shape = RoundedCornerShape(btnRadius),
-                // Use Uppercase 'Modifier' here so it doesn't inherit 'fillMaxWidth'
                 modifier = Modifier
-                    .size(btnSize)
-                   // .padding(8.dp)
+                    .size(btnSize_port)
             ) {
                 Text("")
             }
         }
 
         Row(
-            // Use the passed-in modifier for the Row
-            //modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(btnSpacing)
         ) {
             Button(
@@ -179,10 +194,8 @@ fun ColorGrid_port(modifier: Modifier = Modifier) {
                     contentColor = Color.Black
                 ),
                 shape = RoundedCornerShape(btnRadius),
-                // Use Uppercase 'Modifier' here so it doesn't inherit 'fillMaxWidth'
                 modifier = Modifier
-                    .size(btnSize)
-                   // .padding(8.dp)
+                    .size(btnSize_port)
             ) {
                 Text("")
             }
@@ -194,18 +207,14 @@ fun ColorGrid_port(modifier: Modifier = Modifier) {
                     contentColor = Color.Black
                 ),
                 shape = RoundedCornerShape(btnRadius),
-                // Use Uppercase 'Modifier' here so it doesn't inherit 'fillMaxWidth'
                 modifier = Modifier
-                    .size(btnSize)
-                   // .padding(8.dp)
+                    .size(btnSize_port)
             ) {
                 Text("")
             }
         }
 
         Row(
-            // Use the passed-in modifier for the Row
-            //modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(btnSpacing)
         ) {
             Button(
@@ -215,10 +224,8 @@ fun ColorGrid_port(modifier: Modifier = Modifier) {
                     contentColor = Color.Black
                 ),
                 shape = RoundedCornerShape(btnRadius),
-                // Use Uppercase 'Modifier' here so it doesn't inherit 'fillMaxWidth'
                 modifier = Modifier
-                    .size(btnSize)
-                   // .padding(8.dp)
+                    .size(btnSize_port)
             ) {
                 Text("")
             }
@@ -230,10 +237,8 @@ fun ColorGrid_port(modifier: Modifier = Modifier) {
                     contentColor = Color.Black
                 ),
                 shape = RoundedCornerShape(btnRadius),
-                // Use Uppercase 'Modifier' here so it doesn't inherit 'fillMaxWidth'
                 modifier = Modifier
-                    .size(btnSize)
-                  //  .padding(8.dp)
+                    .size(btnSize_port)
             ) {
                 Text("")
             }
@@ -243,7 +248,101 @@ fun ColorGrid_port(modifier: Modifier = Modifier) {
 
 @Composable
 fun ColorGrid_land(modifier: Modifier = Modifier) {
+    Column(
+        modifier = Modifier
+            .padding(horizontal = 40.dp, vertical = 30.dp),
+        verticalArrangement = Arrangement.spacedBy(btnSpacing)
+    ) {
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(btnSpacing)
+        ) {
+            Button(
+                onClick = { },
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = boxR,
+                    contentColor = Color.Black
+                ),
+                shape = RoundedCornerShape(btnRadius),
+                modifier = Modifier
+                    .size(btnSize_land)
+            ) {
+                Text("")
+            }
 
+            Button(
+                onClick = { },
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = boxG,
+                    contentColor = Color.Black
+                ),
+                shape = RoundedCornerShape(btnRadius),
+                modifier = Modifier
+                    .size(btnSize_land)
+            ) {
+                Text("")
+            }
+        }
+
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(btnSpacing)
+        ) {
+            Button(
+                onClick = { },
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = boxB,
+                    contentColor = Color.Black
+                ),
+                shape = RoundedCornerShape(btnRadius),
+                modifier = Modifier
+                    .size(btnSize_land)
+            ) {
+                Text("")
+            }
+
+            Button(
+                onClick = { },
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = boxM,
+                    contentColor = Color.Black
+                ),
+                shape = RoundedCornerShape(btnRadius),
+                modifier = Modifier
+                    .size(btnSize_land)
+            ) {
+                Text("")
+            }
+        }
+
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(btnSpacing)
+        ) {
+            Button(
+                onClick = { },
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = boxY,
+                    contentColor = Color.Black
+                ),
+                shape = RoundedCornerShape(btnRadius),
+                modifier = Modifier
+                    .size(btnSize_land)
+            ) {
+                Text("")
+            }
+
+            Button(
+                onClick = { },
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = boxC,
+                    contentColor = Color.Black
+                ),
+                shape = RoundedCornerShape(btnRadius),
+                modifier = Modifier
+                    .size(btnSize_land)
+            ) {
+                Text("")
+            }
+        }
+    }
 }
 
 @Composable
@@ -253,13 +352,37 @@ fun SequenceText_port(modifier: Modifier = Modifier) {
         .fillMaxWidth(),
         horizontalArrangement = Arrangement.Center
     ) {
-        Text("This is the sequence")
+        Text("This is the sequence:")
+    }
+
+    Row(
+        modifier = Modifier
+            .fillMaxWidth(),
+        horizontalArrangement = Arrangement.Center
+    ) {
+        Text("R, G, B, M, Y, C")
     }
 }
 
 @Composable
 fun SequenceText_land(modifier: Modifier = Modifier) {
+    Column() {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth(),
+            horizontalArrangement = Arrangement.Center
+        ) {
+            Text("This is the sequence:")
+        }
 
+        Row(
+            modifier = Modifier
+                .fillMaxWidth(),
+            horizontalArrangement = Arrangement.Center
+        ) {
+            Text("R, G, B, M, Y, C")
+        }
+    }
 }
 
 @Composable
@@ -288,5 +411,5 @@ fun ActionButtons_port(modifier: Modifier = Modifier) {
 
 @Composable
 fun ActionButtons_land(modifier: Modifier = Modifier) {
-    
+
 }
