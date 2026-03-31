@@ -1,5 +1,6 @@
 package com.example.pse_appellointermedio
 
+import android.content.res.Configuration
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -24,9 +25,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.example.pse_appellointermedio.ui.theme.PSEAppelloIntermedioTheme
 import com.example.pse_appellointermedio.ui.theme.boxR
 import com.example.pse_appellointermedio.ui.theme.boxG
@@ -34,14 +39,17 @@ import com.example.pse_appellointermedio.ui.theme.boxB
 import com.example.pse_appellointermedio.ui.theme.boxM
 import com.example.pse_appellointermedio.ui.theme.boxY
 import com.example.pse_appellointermedio.ui.theme.boxC
+import com.example.pse_appellointermedio.ui.theme.cancBtn
+import com.example.pse_appellointermedio.ui.theme.fineBtn
 
 
-val mainTopPadding = 50.dp
-val spacerHeight = 20.dp
+val mainTopPadding = 70.dp
 val btnSize = 100.dp
 val btnSpacing = 10.dp
 val btnRadius = 8.dp
 val matrixTopPadding = 60.dp
+val bottomButtonsWidth = 160.dp
+val bottomButtonsHeight = 80.dp
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -63,41 +71,62 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun MainUI(modifier: Modifier = Modifier) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(top = mainTopPadding),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Top
-    ) {
-        Title()
+    val configuration = LocalConfiguration.current
 
-        Spacer(modifier = Modifier.height(spacerHeight))
+    if(configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
 
-        ColorGrid()
+    } else {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(top = mainTopPadding),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Top
+        ) {
+            Title_port()
 
-        //Spacer(modifier = Modifier.height(20.dp))
+            Spacer(modifier = Modifier.height(20.dp))
 
-        SequenceText()
+            ColorGrid_port()
+
+            Spacer(modifier = Modifier.height(80.dp))
+
+            SequenceText_port()
+
+            Spacer(modifier = Modifier.height(100.dp))
+
+            ActionButtons_port()
+        }
     }
 }
 
 @Composable
-fun Title(modifier: Modifier = Modifier) {
+fun Title_port(modifier: Modifier = Modifier) {
     Row(
         modifier = Modifier
             .fillMaxWidth(),
         horizontalArrangement = Arrangement.Center
     ) {
-        Text("PSE - Appello intermedio")
+        Text(
+            text = "PSE - APPELLO INTERMEDIO",
+            style = TextStyle(
+                fontWeight = FontWeight.Bold,
+                fontSize = 20.sp
+            )
+        )
     }
 }
 
 @Composable
-fun ColorGrid(modifier: Modifier = Modifier) {
+fun Title_land(modifier: Modifier = Modifier) {
+
+}
+
+@Composable
+fun ColorGrid_port(modifier: Modifier = Modifier) {
     Column(
         modifier = Modifier
-            .fillMaxSize()
+            .fillMaxWidth()
             .padding(top = matrixTopPadding),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(btnSpacing)
@@ -212,9 +241,13 @@ fun ColorGrid(modifier: Modifier = Modifier) {
     }
 }
 
+@Composable
+fun ColorGrid_land(modifier: Modifier = Modifier) {
+
+}
 
 @Composable
-fun SequenceText(modifier: Modifier = Modifier) {
+fun SequenceText_port(modifier: Modifier = Modifier) {
     Row(
         modifier = Modifier
         .fillMaxWidth(),
@@ -225,25 +258,35 @@ fun SequenceText(modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun BottomButtons(modifier: Modifier = Modifier) {
+fun SequenceText_land(modifier: Modifier = Modifier) {
+
+}
+
+@Composable
+fun ActionButtons_port(modifier: Modifier = Modifier) {
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceEvenly
     ) {
         Button(
             onClick = { },
-            colors = ButtonDefaults.buttonColors(containerColor = boxY),
-            modifier = Modifier.size(width =  50.dp, height = 100.dp)
+            colors = ButtonDefaults.buttonColors(containerColor = cancBtn),
+            modifier = Modifier.size(width =  bottomButtonsWidth, height = bottomButtonsHeight)
         ) {
             Text(stringResource(R.string.cancellaBtn))
         };
 
         Button(
             onClick = { },
-            colors = ButtonDefaults.buttonColors(containerColor = boxY),
-            modifier = Modifier.size(width =  50.dp, height = 100.dp)
+            colors = ButtonDefaults.buttonColors(containerColor = fineBtn),
+            modifier = Modifier.size(width =  bottomButtonsWidth, height = bottomButtonsHeight)
         ) {
             Text(stringResource(R.string.finePartitaBtn))
         };
     }
+}
+
+@Composable
+fun ActionButtons_land(modifier: Modifier = Modifier) {
+    
 }
