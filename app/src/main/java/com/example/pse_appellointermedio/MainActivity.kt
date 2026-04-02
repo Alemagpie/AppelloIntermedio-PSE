@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ButtonDefaults
@@ -22,6 +23,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -41,17 +43,35 @@ import com.example.pse_appellointermedio.ui.theme.boxY
 import com.example.pse_appellointermedio.ui.theme.boxC
 import com.example.pse_appellointermedio.ui.theme.cancBtn
 import com.example.pse_appellointermedio.ui.theme.fineBtn
+import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 
 
+val titleFontSize = 20.sp
 val mainTopPadding_port = 70.dp
-val mainTopPadding_land = 35.dp
+val titleTopPadding_land = 35.dp
+val contentTopPadding_land = 70.dp
 val btnSize_port = 100.dp
 val btnSize_land = 75.dp
 val btnSpacing = 10.dp
 val btnRadius = 8.dp
-val matrixTopPadding = 60.dp
-val bottomButtonsWidth = 160.dp
-val bottomButtonsHeight = 80.dp
+val matrixTopPadding_port = 80.dp
+val matrixTopPadding_land = 30.dp
+val matrixLeftPadding_land = 150.dp
+val seqTextTopPadding_port = 80.dp
+val seqTextTopPadding_land = 30.dp
+val actionButtonsWidth_port = 160.dp
+val actionButtonsWidth_land = 250.dp
+val actionButtonsHeight_port = 80.dp
+val actionButtonsHeight_land = 50.dp
+val actionButtonsTopPadding_port = 100.dp
+val actionButtonsUpperPadding_land = 50.dp
+val actionButtonsMiddlePadding_land = 20.dp
+
+//-----------------------------------------------
+
+
+//val sequence : mutableListOf
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -73,18 +93,43 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun MainUI(modifier: Modifier = Modifier) {
+    var sequenceString by rememberSaveable{ mutableStateOf("") }
     val configuration = LocalConfiguration.current
 
     if(configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-        Column(
+        Row(
             modifier = Modifier
-                .fillMaxSize()
-                .padding(top = mainTopPadding_land)
+            .fillMaxWidth()
+            .padding(top = titleTopPadding_land)
         ) {
             Title_land()
-            ColorGrid_land()
+        }
 
-            SequenceText_land()
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = contentTopPadding_land)
+        ) {
+            Column() {
+                ColorGrid_land(
+                    Modifier,
+                    sequenceString,
+                    onButtonClick = { index -> sequenceString = appendColorToSequence(index, sequenceString) }
+                )
+            }
+
+            Column() {
+                SequenceText_land(
+                    Modifier,
+                    sequenceString
+                )
+
+                ActionButtons_land(
+                    Modifier,
+                    sequenceString,
+                    deleteSequence = { sequenceString = "" }
+                )
+            }
         }
     } else {
         Column(
@@ -96,17 +141,22 @@ fun MainUI(modifier: Modifier = Modifier) {
         ) {
             Title_port()
 
-            Spacer(modifier = Modifier.height(20.dp))
+            ColorGrid_port(
+                Modifier,
+                sequenceString,
+                onButtonClick = { index -> sequenceString = appendColorToSequence(index, sequenceString) }
+            )
 
-            ColorGrid_port()
+            SequenceText_port(
+                Modifier,
+                sequenceString
+            )
 
-            Spacer(modifier = Modifier.height(80.dp))
-
-            SequenceText_port()
-
-            Spacer(modifier = Modifier.height(100.dp))
-
-            ActionButtons_port()
+            ActionButtons_port(
+                Modifier,
+                sequenceString,
+                deleteSequence = { sequenceString = "" }
+            )
         }
     }
 }
@@ -119,10 +169,10 @@ fun Title_port(modifier: Modifier = Modifier) {
         horizontalArrangement = Arrangement.Center
     ) {
         Text(
-            text = "PSE - APPELLO INTERMEDIO",
+            text = stringResource(R.string.title),
             style = TextStyle(
                 fontWeight = FontWeight.Bold,
-                fontSize = 20.sp
+                fontSize = titleFontSize
             )
         )
     }
@@ -136,21 +186,21 @@ fun Title_land(modifier: Modifier = Modifier) {
         horizontalArrangement = Arrangement.Center
     ) {
         Text(
-            text = "PSE - APPELLO INTERMEDIO",
+            text = stringResource(R.string.title),
             style = TextStyle(
                 fontWeight = FontWeight.Bold,
-                fontSize = 20.sp
+                fontSize = titleFontSize
             )
         )
     }
 }
 
 @Composable
-fun ColorGrid_port(modifier: Modifier = Modifier) {
+fun ColorGrid_port(modifier: Modifier = Modifier, seqS : String, onButtonClick: (Int) -> Unit) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(top = matrixTopPadding),
+            .padding(top = matrixTopPadding_port),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(btnSpacing)
     ) {
@@ -158,7 +208,7 @@ fun ColorGrid_port(modifier: Modifier = Modifier) {
             horizontalArrangement = Arrangement.spacedBy(btnSpacing)
         ) {
             Button(
-                onClick = { },
+                onClick = { onButtonClick(0) },
                 colors = ButtonDefaults.buttonColors(
                     containerColor = boxR,
                     contentColor = Color.Black
@@ -171,7 +221,7 @@ fun ColorGrid_port(modifier: Modifier = Modifier) {
             }
 
             Button(
-                onClick = { },
+                onClick = { onButtonClick(1) },
                 colors = ButtonDefaults.buttonColors(
                     containerColor = boxG,
                     contentColor = Color.Black
@@ -188,7 +238,7 @@ fun ColorGrid_port(modifier: Modifier = Modifier) {
             horizontalArrangement = Arrangement.spacedBy(btnSpacing)
         ) {
             Button(
-                onClick = { },
+                onClick = { onButtonClick(2) },
                 colors = ButtonDefaults.buttonColors(
                     containerColor = boxB,
                     contentColor = Color.Black
@@ -201,7 +251,7 @@ fun ColorGrid_port(modifier: Modifier = Modifier) {
             }
 
             Button(
-                onClick = { },
+                onClick = { onButtonClick(3) },
                 colors = ButtonDefaults.buttonColors(
                     containerColor = boxM,
                     contentColor = Color.Black
@@ -218,7 +268,7 @@ fun ColorGrid_port(modifier: Modifier = Modifier) {
             horizontalArrangement = Arrangement.spacedBy(btnSpacing)
         ) {
             Button(
-                onClick = { },
+                onClick = { onButtonClick(4) },
                 colors = ButtonDefaults.buttonColors(
                     containerColor = boxY,
                     contentColor = Color.Black
@@ -231,7 +281,7 @@ fun ColorGrid_port(modifier: Modifier = Modifier) {
             }
 
             Button(
-                onClick = { },
+                onClick = { onButtonClick(5) },
                 colors = ButtonDefaults.buttonColors(
                     containerColor = boxC,
                     contentColor = Color.Black
@@ -247,17 +297,17 @@ fun ColorGrid_port(modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun ColorGrid_land(modifier: Modifier = Modifier) {
+fun ColorGrid_land(modifier: Modifier = Modifier, seqS : String, onButtonClick: (Int) -> Unit) {
     Column(
         modifier = Modifier
-            .padding(horizontal = 40.dp, vertical = 30.dp),
+            .padding(start = matrixLeftPadding_land, top = matrixTopPadding_land),
         verticalArrangement = Arrangement.spacedBy(btnSpacing)
     ) {
         Row(
             horizontalArrangement = Arrangement.spacedBy(btnSpacing)
         ) {
             Button(
-                onClick = { },
+                onClick = { onButtonClick(0) },
                 colors = ButtonDefaults.buttonColors(
                     containerColor = boxR,
                     contentColor = Color.Black
@@ -270,7 +320,7 @@ fun ColorGrid_land(modifier: Modifier = Modifier) {
             }
 
             Button(
-                onClick = { },
+                onClick = { onButtonClick(1) },
                 colors = ButtonDefaults.buttonColors(
                     containerColor = boxG,
                     contentColor = Color.Black
@@ -287,7 +337,7 @@ fun ColorGrid_land(modifier: Modifier = Modifier) {
             horizontalArrangement = Arrangement.spacedBy(btnSpacing)
         ) {
             Button(
-                onClick = { },
+                onClick = { onButtonClick(2) },
                 colors = ButtonDefaults.buttonColors(
                     containerColor = boxB,
                     contentColor = Color.Black
@@ -300,7 +350,7 @@ fun ColorGrid_land(modifier: Modifier = Modifier) {
             }
 
             Button(
-                onClick = { },
+                onClick = { onButtonClick(3) },
                 colors = ButtonDefaults.buttonColors(
                     containerColor = boxM,
                     contentColor = Color.Black
@@ -317,7 +367,7 @@ fun ColorGrid_land(modifier: Modifier = Modifier) {
             horizontalArrangement = Arrangement.spacedBy(btnSpacing)
         ) {
             Button(
-                onClick = { },
+                onClick = { onButtonClick(4) },
                 colors = ButtonDefaults.buttonColors(
                     containerColor = boxY,
                     contentColor = Color.Black
@@ -330,7 +380,7 @@ fun ColorGrid_land(modifier: Modifier = Modifier) {
             }
 
             Button(
-                onClick = { },
+                onClick = { onButtonClick(5) },
                 colors = ButtonDefaults.buttonColors(
                     containerColor = boxC,
                     contentColor = Color.Black
@@ -346,13 +396,14 @@ fun ColorGrid_land(modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun SequenceText_port(modifier: Modifier = Modifier) {
+fun SequenceText_port(modifier: Modifier = Modifier, seqS : String) {
     Row(
         modifier = Modifier
-        .fillMaxWidth(),
+        .fillMaxWidth()
+        .padding(top = seqTextTopPadding_port),
         horizontalArrangement = Arrangement.Center
     ) {
-        Text("This is the sequence:")
+        Text(stringResource(R.string.seq))
     }
 
     Row(
@@ -360,19 +411,20 @@ fun SequenceText_port(modifier: Modifier = Modifier) {
             .fillMaxWidth(),
         horizontalArrangement = Arrangement.Center
     ) {
-        Text("R, G, B, M, Y, C")
+        Text(seqS)
     }
 }
 
 @Composable
-fun SequenceText_land(modifier: Modifier = Modifier) {
+fun SequenceText_land(modifier: Modifier = Modifier, seqS : String) {
     Column() {
         Row(
             modifier = Modifier
-                .fillMaxWidth(),
+                .fillMaxWidth()
+                .padding(top = seqTextTopPadding_land),
             horizontalArrangement = Arrangement.Center
         ) {
-            Text("This is the sequence:")
+            Text(stringResource(R.string.seq))
         }
 
         Row(
@@ -380,21 +432,23 @@ fun SequenceText_land(modifier: Modifier = Modifier) {
                 .fillMaxWidth(),
             horizontalArrangement = Arrangement.Center
         ) {
-            Text("R, G, B, M, Y, C")
+            Text(seqS)
         }
     }
 }
 
 @Composable
-fun ActionButtons_port(modifier: Modifier = Modifier) {
+fun ActionButtons_port(modifier: Modifier = Modifier, seqS : String, deleteSequence: () -> Unit) {
     Row(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = actionButtonsTopPadding_port),
         horizontalArrangement = Arrangement.SpaceEvenly
     ) {
         Button(
-            onClick = { },
+            onClick = { deleteSequence() },
             colors = ButtonDefaults.buttonColors(containerColor = cancBtn),
-            modifier = Modifier.size(width =  bottomButtonsWidth, height = bottomButtonsHeight)
+            modifier = Modifier.size(width =  actionButtonsWidth_port, height = actionButtonsHeight_port)
         ) {
             Text(stringResource(R.string.cancellaBtn))
         };
@@ -402,7 +456,7 @@ fun ActionButtons_port(modifier: Modifier = Modifier) {
         Button(
             onClick = { },
             colors = ButtonDefaults.buttonColors(containerColor = fineBtn),
-            modifier = Modifier.size(width =  bottomButtonsWidth, height = bottomButtonsHeight)
+            modifier = Modifier.size(width =  actionButtonsWidth_port, height = actionButtonsHeight_port)
         ) {
             Text(stringResource(R.string.finePartitaBtn))
         };
@@ -410,6 +464,56 @@ fun ActionButtons_port(modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun ActionButtons_land(modifier: Modifier = Modifier) {
+fun ActionButtons_land(modifier: Modifier = Modifier, seqS : String, deleteSequence: () -> Unit) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = actionButtonsUpperPadding_land),
+        horizontalArrangement = Arrangement.SpaceEvenly
+    ) {
+        Button(
+            onClick = { },
+            colors = ButtonDefaults.buttonColors(containerColor = fineBtn),
+            modifier = Modifier.size(
+                width = actionButtonsWidth_land,
+                height = actionButtonsHeight_land
+            )
+        ) {
+            Text(stringResource(R.string.finePartitaBtn))
+        };
+    }
 
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = actionButtonsMiddlePadding_land),
+        horizontalArrangement = Arrangement.SpaceEvenly
+    ) {
+        Button(
+            onClick = { },
+            colors = ButtonDefaults.buttonColors(containerColor = cancBtn),
+            modifier = Modifier.size(
+                width = actionButtonsWidth_land,
+                height = actionButtonsHeight_land
+            )
+        ) {
+            Text(stringResource(R.string.cancellaBtn))
+        }
+    }
+}
+
+//------------------------------------------------------------
+
+fun appendColorToSequence(index: Int, s: String): String {
+    val newColor = when(index) {
+        0 -> "R"
+        1 -> "G"
+        2 -> "B"
+        3 -> "M"
+        4 -> "Y"
+        5 -> "C"
+        else -> ""
+    }
+
+    return if (s.isEmpty()) newColor else "$s, $newColor"
 }

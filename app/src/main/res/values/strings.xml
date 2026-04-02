@@ -1,6 +1,8 @@
 <resources>
     <string name="app_name">PSE-AppelloIntermedio</string>
     <string name="emptyChar"> </string>
+    <string name="title">PSE - APPELLO INTERMEDIO</string>
+    <string name="seq">Questa è la sequenza:</string>
     <string name="cancellaBtn">CANCELLA</string>
     <string name="finePartitaBtn">FINE PARTITA</string>
 </resources>
