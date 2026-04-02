@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
@@ -411,7 +412,10 @@ fun SequenceText_port(modifier: Modifier = Modifier, seqS : String) {
             .fillMaxWidth(),
         horizontalArrangement = Arrangement.Center
     ) {
-        Text(seqS)
+        Text(
+            text = seqS,
+            modifier = Modifier.wrapContentSize()
+        )
     }
 }
 
@@ -432,7 +436,10 @@ fun SequenceText_land(modifier: Modifier = Modifier, seqS : String) {
                 .fillMaxWidth(),
             horizontalArrangement = Arrangement.Center
         ) {
-            Text(seqS)
+            Text(
+                text = seqS,
+                modifier = Modifier.wrapContentSize()
+            )
         }
     }
 }
@@ -490,7 +497,7 @@ fun ActionButtons_land(modifier: Modifier = Modifier, seqS : String, deleteSeque
         horizontalArrangement = Arrangement.SpaceEvenly
     ) {
         Button(
-            onClick = { },
+            onClick = { deleteSequence() },
             colors = ButtonDefaults.buttonColors(containerColor = cancBtn),
             modifier = Modifier.size(
                 width = actionButtonsWidth_land,
