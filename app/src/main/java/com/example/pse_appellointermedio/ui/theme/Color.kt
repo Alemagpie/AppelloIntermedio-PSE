@@ -12,8 +12,15 @@ val PurpleGrey40 = Color(0xFF625b71)
 val Pink40 = Color(0xFF7D5260)
 
 //Primary
-val bgPrimary = Color(0x262626)
-val primary = Color(0xBEBEBE)
+val bg = Color(0xFF262626)
+val primary = Color(0xFFBEBEBE)
+
+//Themes
+val onBgText_dark = Color(0xFFDEDEDE)
+val onBgText_light = Color(0xFF1A1A1A)
+val bg_dark = Color(0xFF101010)
+val bg_light = Color(0xFFFCFCFC)
+val onBtnText = Color(0xFF303030)
 
 //Button grid
 val boxR = Color(0xFFCC1821)
@@ -26,4 +33,4 @@ val boxC = Color(0xFF32D1D1)
 //Action buttons
 val cancBtn = Color(0xFFA8A8A8)
 val fineBtn = Color(0xFF73A9FF)
-val btnTxt = Color(0xFF0A0A0A)
+val backBtn = Color(0xFF32A883)

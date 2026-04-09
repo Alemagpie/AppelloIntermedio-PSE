@@ -4,4 +4,5 @@
     <string name="seq">Questa è la sequenza:</string>
     <string name="cancellaBtn">CANCELLA</string>
     <string name="finePartitaBtn">FINE PARTITA</string>
+    <string name="indietroBtn">TORNA INDIETRO</string>
 </resources>

@@ -3,6 +3,7 @@ package com.example.pse_appellointermedio
 import android.content.res.Configuration
 import android.os.Bundle
 import androidx.activity.ComponentActivity
+import androidx.activity.addCallback
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.Arrangement
@@ -46,6 +47,10 @@ import com.example.pse_appellointermedio.ui.theme.cancBtn
 import com.example.pse_appellointermedio.ui.theme.fineBtn
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.navigation.NavController
+import androidx.activity.addCallback
+import androidx.activity.compose.BackHandler
+import com.example.pse_appellointermedio.ui.theme.backBtn
 
 
 val titleFontSize = 20.sp
@@ -68,11 +73,16 @@ val actionButtonsHeight_land = 50.dp
 val actionButtonsTopPadding_port = 100.dp
 val actionButtonsUpperPadding_land = 50.dp
 val actionButtonsMiddlePadding_land = 20.dp
+val backButtonTopPadding_port = 30.dp
+val backButtonTopPadding_land = 50.dp
+val backButtonWidth_port = 160.dp
+val backButtonWidth_land = 250.dp
+val backButtonHeight_port = 80.dp
+val backButtonHeight_land = 50.dp
+
 
 //-----------------------------------------------
 
-
-//val sequence : mutableListOf
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -82,7 +92,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             PSEAppelloIntermedioTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    MainUI(
+                    NavGraph(
                         modifier = Modifier.padding(innerPadding)
                     )
                 }
@@ -93,7 +103,7 @@ class MainActivity : ComponentActivity() {
 
 
 @Composable
-fun MainUI(modifier: Modifier = Modifier) {
+fun MainUI(modifier: Modifier = Modifier, navController: NavController) {
     var sequenceString by rememberSaveable{ mutableStateOf("") }
     val configuration = LocalConfiguration.current
 
@@ -128,7 +138,8 @@ fun MainUI(modifier: Modifier = Modifier) {
                 ActionButtons_land(
                     Modifier,
                     sequenceString,
-                    deleteSequence = { sequenceString = "" }
+                    deleteSequence = { sequenceString = "" },
+                    navController
                 )
             }
         }
@@ -156,9 +167,31 @@ fun MainUI(modifier: Modifier = Modifier) {
             ActionButtons_port(
                 Modifier,
                 sequenceString,
-                deleteSequence = { sequenceString = "" }
+                deleteSequence = { sequenceString = "" },
+                navController
             )
         }
+    }
+}
+
+@Composable
+fun SecondaryUI(modifier: Modifier = Modifier, navController: NavController) {
+    BackHandler() {
+        navController.popBackStack()
+    }
+
+    val configuration = LocalConfiguration.current
+
+    if(configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+        ) {
+            BackButton_port(Modifier, navController)
+        }
+
+    } else {
+        BackButton_land(Modifier, navController)
     }
 }
 
@@ -445,7 +478,7 @@ fun SequenceText_land(modifier: Modifier = Modifier, seqS : String) {
 }
 
 @Composable
-fun ActionButtons_port(modifier: Modifier = Modifier, seqS : String, deleteSequence: () -> Unit) {
+fun ActionButtons_port(modifier: Modifier = Modifier, seqS : String, deleteSequence: () -> Unit, navController: NavController) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -461,7 +494,7 @@ fun ActionButtons_port(modifier: Modifier = Modifier, seqS : String, deleteSeque
         };
 
         Button(
-            onClick = { },
+            onClick = { navController.navigate("secondary") },
             colors = ButtonDefaults.buttonColors(containerColor = fineBtn),
             modifier = Modifier.size(width =  actionButtonsWidth_port, height = actionButtonsHeight_port)
         ) {
@@ -471,7 +504,7 @@ fun ActionButtons_port(modifier: Modifier = Modifier, seqS : String, deleteSeque
 }
 
 @Composable
-fun ActionButtons_land(modifier: Modifier = Modifier, seqS : String, deleteSequence: () -> Unit) {
+fun ActionButtons_land(modifier: Modifier = Modifier, seqS : String, deleteSequence: () -> Unit, navController: NavController) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -479,7 +512,7 @@ fun ActionButtons_land(modifier: Modifier = Modifier, seqS : String, deleteSeque
         horizontalArrangement = Arrangement.SpaceEvenly
     ) {
         Button(
-            onClick = { },
+            onClick = { navController.navigate("secondary") },
             colors = ButtonDefaults.buttonColors(containerColor = fineBtn),
             modifier = Modifier.size(
                 width = actionButtonsWidth_land,
@@ -509,6 +542,59 @@ fun ActionButtons_land(modifier: Modifier = Modifier, seqS : String, deleteSeque
     }
 }
 
+@Composable
+fun GamesList_port(modifier: Modifier = Modifier) {
+
+}
+
+@Composable
+fun GamesList_land(modifier: Modifier = Modifier) {
+
+}
+
+@Composable
+fun BackButton_port(modifier: Modifier = Modifier, navController: NavController) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = backButtonTopPadding_port),
+        horizontalArrangement = Arrangement.SpaceEvenly
+    ) {
+        Button(
+            onClick = { navController.popBackStack() },
+            colors = ButtonDefaults.buttonColors(containerColor = backBtn),
+            modifier = Modifier.size(
+                width = backButtonWidth_port,
+                height = backButtonHeight_port
+            )
+        ) {
+            Text(stringResource(R.string.indietroBtn))
+        }
+
+    }
+}
+
+@Composable
+fun BackButton_land(modifier: Modifier = Modifier, navController: NavController) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = backButtonTopPadding_land),
+        horizontalArrangement = Arrangement.SpaceEvenly
+    ) {
+        Button(
+            onClick = { navController.popBackStack() },
+            colors = ButtonDefaults.buttonColors(containerColor = backBtn),
+            modifier = Modifier.size(
+                width = backButtonWidth_land,
+                height = backButtonHeight_land
+            )
+        ) {
+            Text(stringResource(R.string.indietroBtn))
+        }
+
+    }
+}
 //------------------------------------------------------------
 
 fun appendColorToSequence(index: Int, s: String): String {
