@@ -50,6 +50,8 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.navigation.NavController
 import androidx.activity.addCallback
 import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.border
+import androidx.compose.foundation.lazy.LazyColumn
 import com.example.pse_appellointermedio.ui.theme.backBtn
 
 
@@ -180,9 +182,31 @@ fun SecondaryUI(modifier: Modifier = Modifier, navController: NavController) {
         navController.popBackStack()
     }
 
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = matrixTopPadding_port),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(btnSpacing)
+    ) {
+
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .size(width = 200.dp, height = 300.dp)
+            .border(width = 1.dp, color = Color.Black, shape = RoundedCornerShape(8.dp))
+    ) {
+        LazyColumn {
+            items(30) { index ->
+                GamesListItem(Modifier, "$index", "aaa")
+            }
+        }
+    }
+
+
     val configuration = LocalConfiguration.current
 
-    if(configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+    if (configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -192,6 +216,8 @@ fun SecondaryUI(modifier: Modifier = Modifier, navController: NavController) {
 
     } else {
         BackButton_land(Modifier, navController)
+    }
+
     }
 }
 
@@ -550,6 +576,22 @@ fun GamesList_port(modifier: Modifier = Modifier) {
 @Composable
 fun GamesList_land(modifier: Modifier = Modifier) {
 
+}
+
+@Composable
+fun GamesListItem(modifier: Modifier = Modifier, pressedCount : String, pressedSeq : String) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+    ) {
+        Text (
+            text = pressedCount
+        )
+
+        Text(
+            text = pressedSeq
+        )
+    }
 }
 
 @Composable
