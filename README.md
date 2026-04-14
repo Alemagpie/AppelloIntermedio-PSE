@@ -7,5 +7,4 @@ Versione android:
 **TO-DO:**
 - Fix sequence pushing buttons down
 - Localizzazione
-- UI schermata 2
 - Logica schermata 2
