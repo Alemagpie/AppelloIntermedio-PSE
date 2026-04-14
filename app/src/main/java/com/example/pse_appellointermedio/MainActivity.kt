@@ -6,7 +6,6 @@ import androidx.activity.ComponentActivity
 import androidx.activity.addCallback
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -51,8 +50,11 @@ import androidx.navigation.NavController
 import androidx.activity.addCallback
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.ui.text.style.TextAlign
 import com.example.pse_appellointermedio.ui.theme.backBtn
+import com.example.pse_appellointermedio.ui.theme.listOutline
 
 
 val titleFontSize = 20.sp
@@ -81,6 +83,10 @@ val backButtonWidth_port = 160.dp
 val backButtonWidth_land = 250.dp
 val backButtonHeight_port = 80.dp
 val backButtonHeight_land = 50.dp
+val listTopPadding_port = 80.dp
+val listSizeX_port = 200.dp
+val listSizeY_port = 300.dp
+val listItemPadding = 15.dp
 
 
 //-----------------------------------------------
@@ -184,19 +190,22 @@ fun SecondaryUI(modifier: Modifier = Modifier, navController: NavController) {
 
     Column(
         modifier = Modifier
-            .fillMaxWidth()
-            .padding(top = matrixTopPadding_port),
+            .fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(btnSpacing)
     ) {
 
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .size(width = 200.dp, height = 300.dp)
-            .border(width = 1.dp, color = Color.Black, shape = RoundedCornerShape(8.dp))
+            .padding(top = listTopPadding_port),
+        horizontalArrangement = Arrangement.Center
     ) {
-        LazyColumn {
+        LazyColumn (
+            modifier = Modifier
+                .size(width = listSizeX_port, height = listSizeY_port)
+                .border(width = 1.dp, color = listOutline, shape = RoundedCornerShape(8.dp))
+            )
+        {
             items(30) { index ->
                 GamesListItem(Modifier, "$index", "aaa")
             }
@@ -585,10 +594,15 @@ fun GamesListItem(modifier: Modifier = Modifier, pressedCount : String, pressedS
             .fillMaxWidth()
     ) {
         Text (
-            text = pressedCount
+            modifier = Modifier
+                .padding(listItemPadding),
+            text = pressedCount,
+            textAlign = TextAlign.Right
         )
 
         Text(
+            modifier = Modifier
+                .padding(listItemPadding),
             text = pressedSeq
         )
     }

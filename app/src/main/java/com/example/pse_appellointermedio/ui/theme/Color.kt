@@ -34,3 +34,6 @@ val boxC = Color(0xFF32D1D1)
 val cancBtn = Color(0xFFA8A8A8)
 val fineBtn = Color(0xFF73A9FF)
 val backBtn = Color(0xFF32A883)
+
+//List stuff
+val listOutline = Color(0xFFF2F2F2)
