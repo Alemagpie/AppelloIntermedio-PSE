@@ -55,7 +55,8 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import com.example.pse_appellointermedio.ui.theme.backBtn
-import com.example.pse_appellointermedio.ui.theme.listOutline
+import com.example.pse_appellointermedio.ui.theme.listOutline_dark
+import com.example.pse_appellointermedio.ui.theme.listOutline_light
 
 
 val titleFontSize = 20.sp
@@ -609,7 +610,7 @@ fun GamesList_port(modifier: Modifier = Modifier, gamesList : List<String>) {
     LazyColumn (
         modifier = Modifier
             .size(width = listSizeX_port, height = listSizeY_port)
-            .border(width = 1.dp, color = listOutline, shape = RoundedCornerShape(8.dp))
+            .border(width = 1.dp, color = MaterialTheme.colorScheme.outline, shape = RoundedCornerShape(8.dp))
     )
     {
         items(gamesList.size) { s ->
@@ -626,7 +627,7 @@ fun GamesList_land(modifier: Modifier = Modifier, gamesList : List<String>) {
     LazyColumn (
         modifier = Modifier
             .size(width = listSizeX_port, height = listSizeY_port)
-            .border(width = 1.dp, color = listOutline, shape = RoundedCornerShape(8.dp))
+            .border(width = 1.dp, color = MaterialTheme.colorScheme.outline, shape = RoundedCornerShape(8.dp))
     )
     {
         items(gamesList.size) { s ->

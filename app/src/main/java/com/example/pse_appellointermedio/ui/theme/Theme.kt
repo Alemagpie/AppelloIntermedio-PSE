@@ -18,7 +18,8 @@ private val DarkColorScheme = darkColorScheme(
 
     background = bg_dark,
     onPrimary = onBtnText,
-    onBackground = onBgText_dark
+    onBackground = onBgText_dark,
+    outline = listOutline_dark
 )
 
 private val LightColorScheme = lightColorScheme(
@@ -28,7 +29,8 @@ private val LightColorScheme = lightColorScheme(
 
     background = bg_light,
     onPrimary = onBtnText,
-    onBackground = onBgText_light
+    onBackground = onBgText_light,
+    outline = listOutline_light
 
     /* Other default colors to override
     background = Color(0xFFFFFBFE),

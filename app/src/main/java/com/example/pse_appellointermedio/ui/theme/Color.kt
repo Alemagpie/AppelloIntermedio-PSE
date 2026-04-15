@@ -36,4 +36,5 @@ val fineBtn = Color(0xFF73A9FF)
 val backBtn = Color(0xFF32A883)
 
 //List stuff
-val listOutline = Color(0xFFF2F2F2)
+val listOutline_dark = Color(0xFFF2F2F2)
+val listOutline_light = Color(0xFF1F1F1F)
