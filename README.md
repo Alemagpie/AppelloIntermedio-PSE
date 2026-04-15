@@ -5,6 +5,4 @@ Versione android:
     14.0
 
 **TO-DO:**
-- Fix sequence pushing buttons down
 - Localizzazione
-- Logica schermata 2

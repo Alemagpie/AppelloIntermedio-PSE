@@ -53,6 +53,7 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import com.example.pse_appellointermedio.ui.theme.backBtn
 import com.example.pse_appellointermedio.ui.theme.listOutline
 
@@ -79,11 +80,11 @@ val actionButtonsUpperPadding_land = 50.dp
 val actionButtonsMiddlePadding_land = 20.dp
 val backButtonTopPadding_port = 30.dp
 val backButtonTopPadding_land = 50.dp
-val backButtonWidth_port = 160.dp
+val backButtonWidth_port = 250.dp
 val backButtonWidth_land = 250.dp
-val backButtonHeight_port = 80.dp
+val backButtonHeight_port = 50.dp
 val backButtonHeight_land = 50.dp
-val listTopPadding_port = 80.dp
+val listTopPadding_port = 60.dp
 val listSizeX_port = 200.dp
 val listSizeY_port = 300.dp
 val listItemPadding = 15.dp
@@ -111,7 +112,7 @@ class MainActivity : ComponentActivity() {
 
 
 @Composable
-fun MainUI(modifier: Modifier = Modifier, navController: NavController) {
+fun MainUI(modifier: Modifier = Modifier, navController: NavController, gamesList : List<String>, onAddGame: (String) -> Unit) {
     var sequenceString by rememberSaveable{ mutableStateOf("") }
     val configuration = LocalConfiguration.current
 
@@ -147,7 +148,9 @@ fun MainUI(modifier: Modifier = Modifier, navController: NavController) {
                     Modifier,
                     sequenceString,
                     deleteSequence = { sequenceString = "" },
-                    navController
+                    navController,
+                    gamesList,
+                    onAddGame
                 )
             }
         }
@@ -176,42 +179,19 @@ fun MainUI(modifier: Modifier = Modifier, navController: NavController) {
                 Modifier,
                 sequenceString,
                 deleteSequence = { sequenceString = "" },
-                navController
+                navController,
+                gamesList,
+                onAddGame
             )
         }
     }
 }
 
 @Composable
-fun SecondaryUI(modifier: Modifier = Modifier, navController: NavController) {
+fun SecondaryUI(modifier: Modifier = Modifier, navController: NavController, gamesList : List<String> ) {
     BackHandler() {
         navController.popBackStack()
     }
-
-    Column(
-        modifier = Modifier
-            .fillMaxWidth(),
-        horizontalAlignment = Alignment.CenterHorizontally,
-    ) {
-
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(top = listTopPadding_port),
-        horizontalArrangement = Arrangement.Center
-    ) {
-        LazyColumn (
-            modifier = Modifier
-                .size(width = listSizeX_port, height = listSizeY_port)
-                .border(width = 1.dp, color = listOutline, shape = RoundedCornerShape(8.dp))
-            )
-        {
-            items(30) { index ->
-                GamesListItem(Modifier, "$index", "aaa")
-            }
-        }
-    }
-
 
     val configuration = LocalConfiguration.current
 
@@ -219,13 +199,48 @@ fun SecondaryUI(modifier: Modifier = Modifier, navController: NavController) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
+                .padding(top = listTopPadding_port),
+            horizontalArrangement = Arrangement.SpaceEvenly
         ) {
-            BackButton_port(Modifier, navController)
+            GamesList_land(
+                Modifier,
+                gamesList
+            )
+
+            BackButton_land(
+                Modifier,
+                navController
+            )
         }
 
     } else {
-        BackButton_land(Modifier, navController)
-    }
+        Column(
+            modifier = Modifier
+                .fillMaxSize(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = listTopPadding_port),
+                horizontalArrangement = Arrangement.Center
+            ) {
+                GamesList_port(
+                    Modifier,
+                    gamesList
+                )
+            }
+
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+            ) {
+                BackButton_port(
+                    Modifier,
+                    navController
+                )
+            }
+        }
 
     }
 }
@@ -482,6 +497,8 @@ fun SequenceText_port(modifier: Modifier = Modifier, seqS : String) {
     ) {
         Text(
             text = seqS,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
             modifier = Modifier.wrapContentSize()
         )
     }
@@ -506,6 +523,8 @@ fun SequenceText_land(modifier: Modifier = Modifier, seqS : String) {
         ) {
             Text(
                 text = seqS,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
                 modifier = Modifier.wrapContentSize()
             )
         }
@@ -513,7 +532,7 @@ fun SequenceText_land(modifier: Modifier = Modifier, seqS : String) {
 }
 
 @Composable
-fun ActionButtons_port(modifier: Modifier = Modifier, seqS : String, deleteSequence: () -> Unit, navController: NavController) {
+fun ActionButtons_port(modifier: Modifier = Modifier, seqS : String, deleteSequence: () -> Unit, navController: NavController, gamesList : List<String>, onAddGame: (String) -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -529,7 +548,11 @@ fun ActionButtons_port(modifier: Modifier = Modifier, seqS : String, deleteSeque
         };
 
         Button(
-            onClick = { navController.navigate("secondary") },
+            onClick = {
+                onAddGame(seqS)
+                navController.navigate("secondary")
+                deleteSequence()
+            },
             colors = ButtonDefaults.buttonColors(containerColor = fineBtn),
             modifier = Modifier.size(width =  actionButtonsWidth_port, height = actionButtonsHeight_port)
         ) {
@@ -539,7 +562,7 @@ fun ActionButtons_port(modifier: Modifier = Modifier, seqS : String, deleteSeque
 }
 
 @Composable
-fun ActionButtons_land(modifier: Modifier = Modifier, seqS : String, deleteSequence: () -> Unit, navController: NavController) {
+fun ActionButtons_land(modifier: Modifier = Modifier, seqS : String, deleteSequence: () -> Unit, navController: NavController, gamesList : List<String>, onAddGame: (String) -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -547,7 +570,11 @@ fun ActionButtons_land(modifier: Modifier = Modifier, seqS : String, deleteSeque
         horizontalArrangement = Arrangement.SpaceEvenly
     ) {
         Button(
-            onClick = { navController.navigate("secondary") },
+            onClick = {
+                onAddGame(seqS)
+                navController.navigate("secondary")
+                deleteSequence()
+            },
             colors = ButtonDefaults.buttonColors(containerColor = fineBtn),
             modifier = Modifier.size(
                 width = actionButtonsWidth_land,
@@ -578,13 +605,37 @@ fun ActionButtons_land(modifier: Modifier = Modifier, seqS : String, deleteSeque
 }
 
 @Composable
-fun GamesList_port(modifier: Modifier = Modifier) {
-
+fun GamesList_port(modifier: Modifier = Modifier, gamesList : List<String>) {
+    LazyColumn (
+        modifier = Modifier
+            .size(width = listSizeX_port, height = listSizeY_port)
+            .border(width = 1.dp, color = listOutline, shape = RoundedCornerShape(8.dp))
+    )
+    {
+        items(gamesList.size) { s ->
+            GamesListItem(
+                pressedCount = countSequence(gamesList[s]).toString(),
+                pressedSeq = shortenSequence(s = gamesList[s])
+            )
+        }
+    }
 }
 
 @Composable
-fun GamesList_land(modifier: Modifier = Modifier) {
-
+fun GamesList_land(modifier: Modifier = Modifier, gamesList : List<String>) {
+    LazyColumn (
+        modifier = Modifier
+            .size(width = listSizeX_port, height = listSizeY_port)
+            .border(width = 1.dp, color = listOutline, shape = RoundedCornerShape(8.dp))
+    )
+    {
+        items(gamesList.size) { s ->
+            GamesListItem(
+                pressedCount = countSequence(gamesList[s]).toString(),
+                pressedSeq = shortenSequence(s = gamesList[s])
+            )
+        }
+    }
 }
 
 @Composable
@@ -632,12 +683,6 @@ fun BackButton_port(modifier: Modifier = Modifier, navController: NavController)
 
 @Composable
 fun BackButton_land(modifier: Modifier = Modifier, navController: NavController) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(top = backButtonTopPadding_land),
-        horizontalArrangement = Arrangement.SpaceEvenly
-    ) {
         Button(
             onClick = { navController.popBackStack() },
             colors = ButtonDefaults.buttonColors(containerColor = backBtn),
@@ -648,8 +693,6 @@ fun BackButton_land(modifier: Modifier = Modifier, navController: NavController)
         ) {
             Text(stringResource(R.string.indietroBtn))
         }
-
-    }
 }
 //------------------------------------------------------------
 
@@ -665,4 +708,18 @@ fun appendColorToSequence(index: Int, s: String): String {
     }
 
     return if (s.isEmpty()) newColor else "$s, $newColor"
+}
+
+fun shortenSequence(maxChar : Int = 5, s: String) : String {
+    //3*maxChar-2 corresponds to the number of characters in the string for maxChar colors pressed
+    val charCount = 3 * maxChar - 2
+    if(s.length > (charCount)) {
+        return (s.substring(startIndex =  0, endIndex =  charCount) + "...")
+    } else {
+        return s
+    }
+}
+
+fun countSequence(s : String) : Int {
+    return s.length - (s.count{it == ' '} + s.count{it == ','})
 }
