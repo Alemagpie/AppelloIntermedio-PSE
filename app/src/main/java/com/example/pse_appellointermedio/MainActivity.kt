@@ -1,5 +1,6 @@
 package com.example.pse_appellointermedio
 
+import android.content.Context
 import android.content.res.Configuration
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -52,6 +53,7 @@ import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.ui.text.intl.Locale
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import com.example.pse_appellointermedio.ui.theme.backBtn
@@ -723,4 +725,13 @@ fun shortenSequence(maxChar : Int = 5, s: String) : String {
 
 fun countSequence(s : String) : Int {
     return s.length - (s.count{it == ' '} + s.count{it == ','})
+}
+
+fun changeLanguage(context : Context, lang : String) : Context? {
+    /*val locale = Locale(lang)
+    //Locale.setDefault(locale)
+    val config : Configuration = context.resources.configuration
+    config.setLocale(locale)
+    return context.createConfigurationContext(config)*/
+    return null
 }
