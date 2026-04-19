@@ -5,4 +5,5 @@
     <string name="cancellaBtn">CANCELLA</string>
     <string name="finePartitaBtn">FINE PARTITA</string>
     <string name="indietroBtn">TORNA INDIETRO</string>
+    <string name="langIcon">Cambia lingua</string>
 </resources>

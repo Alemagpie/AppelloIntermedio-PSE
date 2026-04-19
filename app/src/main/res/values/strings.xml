@@ -5,4 +5,5 @@
     <string name="cancellaBtn">DELETE</string>
     <string name="finePartitaBtn">END GAME</string>
     <string name="indietroBtn">GO BACK</string>
+    <string name="langIcon">Change language</string>
 </resources>

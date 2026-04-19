@@ -1,7 +1,12 @@
 package com.example.pse_appellointermedio
 
+import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import android.content.res.Configuration
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
+import androidx.compose.ui.res.painterResource
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.addCallback
@@ -53,12 +58,15 @@ import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.intl.Locale
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import com.example.pse_appellointermedio.ui.theme.backBtn
 import com.example.pse_appellointermedio.ui.theme.listOutline_dark
 import com.example.pse_appellointermedio.ui.theme.listOutline_light
+import androidx.core.content.edit
 
 
 val titleFontSize = 20.sp
@@ -91,6 +99,8 @@ val listTopPadding_port = 60.dp
 val listSizeX_port = 200.dp
 val listSizeY_port = 300.dp
 val listItemPadding = 15.dp
+val langIconSize = 40.dp
+val langIconPadding = 20.dp
 
 
 //-----------------------------------------------
@@ -188,6 +198,9 @@ fun MainUI(modifier: Modifier = Modifier, navController: NavController, gamesLis
             )
         }
     }
+
+    //ONLY for testing localization
+    //LanguageIcon()
 }
 
 @Composable
@@ -697,6 +710,34 @@ fun BackButton_land(modifier: Modifier = Modifier, navController: NavController)
             Text(stringResource(R.string.indietroBtn))
         }
 }
+
+@Composable
+fun LanguageIcon(modifier : Modifier = Modifier) {
+    val context = LocalContext.current
+    val prefs = context.getSharedPreferences("settings", Context.MODE_PRIVATE)
+    var currentLang by rememberSaveable { mutableStateOf(prefs.getString("lang", "en") ?: "en") }
+
+    Image(
+        painter = painterResource(R.drawable.languages_icon),
+        contentDescription = stringResource(R.string.langIcon),
+        modifier = Modifier
+            .padding(start = langIconPadding, top = langIconPadding)
+            .size(langIconSize)
+            .clickable {
+                currentLang = when(currentLang) {
+                    "en" -> "it"
+                    "it" -> "es"
+                    "es" -> "en"
+                    else -> "en"
+                }
+                prefs.edit { putString("lang", currentLang) }
+                setLanguage(context, currentLang)
+                context.startActivity(Intent(context, MainActivity::class.java))
+                (context as Activity).finish()
+            }
+    )
+}
+
 //------------------------------------------------------------
 
 fun appendColorToSequence(index: Int, s: String): String {
@@ -716,6 +757,11 @@ fun appendColorToSequence(index: Int, s: String): String {
 fun shortenSequence(maxChar : Int = 5, s: String) : String {
     //3*maxChar-2 corresponds to the number of characters in the string for maxChar colors pressed
     val charCount = 3 * maxChar - 2
+
+    if(s.length == 0) {
+        return "..."
+    }
+
     if(s.length > (charCount)) {
         return (s.substring(startIndex =  0, endIndex =  charCount) + "...")
     } else {
@@ -727,11 +773,10 @@ fun countSequence(s : String) : Int {
     return s.length - (s.count{it == ' '} + s.count{it == ','})
 }
 
-fun changeLanguage(context : Context, lang : String) : Context? {
-    /*val locale = Locale(lang)
-    //Locale.setDefault(locale)
-    val config : Configuration = context.resources.configuration
+fun setLanguage(context: Context, languageCode: String) {
+    val locale = java.util.Locale(languageCode)
+    java.util.Locale.setDefault(locale)
+    val config = context.resources.configuration
     config.setLocale(locale)
-    return context.createConfigurationContext(config)*/
-    return null
+    context.resources.updateConfiguration(config, context.resources.displayMetrics)
 }
