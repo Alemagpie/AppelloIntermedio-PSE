@@ -1,6 +1,6 @@
 Dispositivi usati per testare:
-    Xiaomi 11T Pro (via USB - android 14.0)
-    Samsung A54 (via USB - android 16.0)
+- Xiaomi 11T Pro (via USB - android 14.0)
+- Samsung A54 (via USB - android 16.0)
 
 
 Note per la correzione:
