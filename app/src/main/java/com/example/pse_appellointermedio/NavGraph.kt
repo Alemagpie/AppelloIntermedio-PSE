@@ -24,5 +24,9 @@ fun NavGraph(modifier: Modifier = Modifier) {
         composable("secondary") {
             SecondaryUI(navController = navController, gamesList = allGames)
         }
+        composable("detail/{game}") { backStackEntry ->
+            val game = backStackEntry.arguments?.getString("game")
+            DetailUI(navController = navController)
+        }
     }
 }

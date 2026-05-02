@@ -2,6 +2,7 @@
     <string name="app_name">PSE - AppelloIntermedio</string>
     <string name="title">PSE - APPELLO INTERMEDIO</string>
     <string name="seq">Questa è la sequenza:</string>
+    <string name="startBtn">INIZIA PARTITA</string>
     <string name="cancellaBtn">CANCELLA</string>
     <string name="finePartitaBtn">FINE PARTITA</string>
     <string name="indietroBtn">TORNA INDIETRO</string>

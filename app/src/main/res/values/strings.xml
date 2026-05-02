@@ -2,6 +2,7 @@
     <string name="app_name">PSE - IntermediateAppeal</string>
     <string name="title">PSE - INTERMEDIATE APPEAL</string>
     <string name="seq">This is the sequence:</string>
+    <string name="startBtn">START GAME</string>
     <string name="cancellaBtn">DELETE</string>
     <string name="finePartitaBtn">END GAME</string>
     <string name="indietroBtn">GO BACK</string>

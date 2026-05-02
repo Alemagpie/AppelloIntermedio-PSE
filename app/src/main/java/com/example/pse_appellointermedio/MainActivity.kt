@@ -51,6 +51,7 @@ import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -58,6 +59,7 @@ import com.example.pse_appellointermedio.ui.theme.backBtn
 import com.example.pse_appellointermedio.ui.theme.listOutline_dark
 import com.example.pse_appellointermedio.ui.theme.listOutline_light
 import androidx.core.content.edit
+import com.example.pse_appellointermedio.ui.theme.startBtn
 
 
 val titleFontSize = 20.sp
@@ -73,12 +75,14 @@ val matrixTopPadding_land = 30.dp
 val matrixLeftPadding_land = 150.dp
 val seqTextTopPadding_port = 80.dp
 val seqTextTopPadding_land = 30.dp
+val startButtonTopPadding_port = 100.dp
+val startButtonTopPadding_land = 50.dp
 val actionButtonsWidth_port = 160.dp
 val actionButtonsWidth_land = 250.dp
 val actionButtonsHeight_port = 80.dp
 val actionButtonsHeight_land = 50.dp
-val actionButtonsTopPadding_port = 100.dp
-val actionButtonsUpperPadding_land = 50.dp
+val actionButtonsTopPadding_port = 50.dp
+val actionButtonsUpperPadding_land = 30.dp
 val actionButtonsMiddlePadding_land = 20.dp
 val backButtonTopPadding_port = 30.dp
 val backButtonTopPadding_land = 50.dp
@@ -118,6 +122,8 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun MainUI(modifier: Modifier = Modifier, navController: NavController, gamesList : List<String>, onAddGame: (String) -> Unit) {
     var sequenceString by rememberSaveable{ mutableStateOf("") }
+    var isShowingSequence by rememberSaveable{ mutableStateOf(false) }
+    var hasStartedGame by rememberSaveable{ mutableStateOf(false) }
     val configuration = LocalConfiguration.current
 
     if(configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
@@ -145,7 +151,14 @@ fun MainUI(modifier: Modifier = Modifier, navController: NavController, gamesLis
             Column() {
                 SequenceText_land(
                     Modifier,
-                    sequenceString
+                    sequenceString,
+                    hasStartedGame
+                )
+
+                StartButton_land(
+                    Modifier,
+                    hasStartedGame,
+                    startGame = { hasStartedGame = true }
                 )
 
                 ActionButtons_land(
@@ -176,7 +189,14 @@ fun MainUI(modifier: Modifier = Modifier, navController: NavController, gamesLis
 
             SequenceText_port(
                 Modifier,
-                sequenceString
+                sequenceString,
+                hasStartedGame
+            )
+
+            StartButton_port(
+                Modifier,
+                hasStartedGame,
+                startGame = { hasStartedGame = true }
             )
 
             ActionButtons_port(
@@ -252,6 +272,10 @@ fun SecondaryUI(modifier: Modifier = Modifier, navController: NavController, gam
     }
 }
 
+@Composable
+fun DetailUI(modifier: Modifier = Modifier, navController: NavController) {
+
+}
 @Composable
 fun Title_port(modifier: Modifier = Modifier) {
     Row(
@@ -487,53 +511,81 @@ fun ColorGrid_land(modifier: Modifier = Modifier, seqS : String, onButtonClick: 
 }
 
 @Composable
-fun SequenceText_port(modifier: Modifier = Modifier, seqS : String) {
-    Row(
+fun SequenceText_port(modifier: Modifier = Modifier, seqS : String, state : Boolean) {
+    Column(
         modifier = Modifier
-        .fillMaxWidth()
-        .padding(top = seqTextTopPadding_port),
-        horizontalArrangement = Arrangement.Center
+            .fillMaxWidth()
+            .padding(top = seqTextTopPadding_port)
+            .alpha(if(state) 1f else 0f),
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(stringResource(R.string.seq))
-    }
-
-    Row(
-        modifier = Modifier
-            .fillMaxWidth(),
-        horizontalArrangement = Arrangement.Center
-    ) {
         Text(
             text = seqS,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
-            modifier = Modifier.wrapContentSize()
+            modifier = Modifier
+                .wrapContentSize()
         )
     }
 }
 
 @Composable
-fun SequenceText_land(modifier: Modifier = Modifier, seqS : String) {
-    Column() {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = seqTextTopPadding_land),
-            horizontalArrangement = Arrangement.Center
-        ) {
-            Text(stringResource(R.string.seq))
-        }
+fun SequenceText_land(modifier: Modifier = Modifier, seqS : String, state : Boolean) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = seqTextTopPadding_land)
+            .alpha(if(state) 1f else 0f),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text(stringResource(R.string.seq))
+        Text(
+            text = seqS,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
+            modifier = Modifier.fillMaxWidth()
+        )
+    }
+}
 
-        Row(
+@Composable
+fun StartButton_port(modifier: Modifier = Modifier, state : Boolean, startGame : () -> Unit) {
+    Row (
+        modifier = Modifier
+            .fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceEvenly
+    ) {
+            Button(
+                onClick = { startGame() },
+                colors = ButtonDefaults.buttonColors(containerColor = startBtn),
+                modifier = Modifier
+                    .size(width =  actionButtonsWidth_port, height = actionButtonsHeight_port)
+                    .alpha(if(!state) 1f else 0f),
+                enabled = !state
+            ) {
+                Text(stringResource(R.string.startBtn))
+            }
+    }
+}
+
+@Composable
+fun StartButton_land(modifier: Modifier = Modifier, state : Boolean, startGame : () -> Unit) {
+    Row (
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = 0.dp /*(state) { startButtonTopPadding_port } else { 0.dp }*/),
+        horizontalArrangement = Arrangement.SpaceEvenly
+    ) {
+        Button(
+            onClick = { startGame() },
+            colors = ButtonDefaults.buttonColors(containerColor = startBtn),
             modifier = Modifier
-                .fillMaxWidth(),
-            horizontalArrangement = Arrangement.Center
+                .size(width =  actionButtonsWidth_land, height = actionButtonsHeight_land)
+                .alpha(if(!state) 1f else 0f),
+            enabled = !state
         ) {
-            Text(
-                text = seqS,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
-                modifier = Modifier.wrapContentSize()
-            )
+            Text(stringResource(R.string.startBtn))
         }
     }
 }

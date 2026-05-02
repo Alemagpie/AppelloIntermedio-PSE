@@ -2,6 +2,7 @@
     <string name="app_name">PSE - ApelaciónIntermedia</string>
     <string name="title">PSE - APELACION INTERMEDIA</string>
     <string name="seq">Esta es la secuencia:</string>
+    <string name="startBtn">EMPEZAR EL JUEGO</string>
     <string name="cancellaBtn">ELIMINA</string>
     <string name="finePartitaBtn">FIN DEL JUEGO</string>
     <string name="indietroBtn">VOLVER</string>
