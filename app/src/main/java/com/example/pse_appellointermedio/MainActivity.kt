@@ -60,6 +60,8 @@ import com.example.pse_appellointermedio.ui.theme.listOutline_dark
 import com.example.pse_appellointermedio.ui.theme.listOutline_light
 import androidx.core.content.edit
 import com.example.pse_appellointermedio.ui.theme.startBtn
+import kotlinx.coroutines.*
+import kotlin.random.Random
 
 
 val titleFontSize = 20.sp
@@ -122,9 +124,38 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun MainUI(modifier: Modifier = Modifier, navController: NavController, gamesList : List<String>, onAddGame: (String) -> Unit) {
     var sequenceString by rememberSaveable{ mutableStateOf("") }
+    var proposedSequence by remember { mutableStateOf("") }
+    var sequenceLenght = 0
     var isShowingSequence by rememberSaveable{ mutableStateOf(false) }
     var hasStartedGame by rememberSaveable{ mutableStateOf(false) }
     val configuration = LocalConfiguration.current
+
+    val scope = rememberCoroutineScope()
+    var job by remember { mutableStateOf<Job?>(null) }
+
+    var hIndex by remember { mutableStateOf<Int?>(null) }
+    val startSequence : () -> Unit = {  //atm it stops if screen is rotated
+        job = scope.launch {
+            while (true) {
+                proposedSequence = addToRandomSequence(proposedSequence)
+                val s = proposedSequence.replace(", ", "")
+                sequenceLenght++
+
+                isShowingSequence = true
+                for (c in s) {
+                    hIndex = getIndexFromColor(c)
+                    delay(600)
+                    hIndex = null
+                    delay(200)
+                }
+                isShowingSequence = false
+
+                delay(2000)
+            }
+        }
+    }
+
+
 
     if(configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
         Row(
@@ -184,7 +215,8 @@ fun MainUI(modifier: Modifier = Modifier, navController: NavController, gamesLis
             ColorGrid_port(
                 Modifier,
                 sequenceString,
-                onButtonClick = { index -> sequenceString = appendColorToSequence(index, sequenceString) }
+                onButtonClick = { index -> sequenceString = appendColorToSequence(index, sequenceString) },
+                hIndex
             )
 
             SequenceText_port(
@@ -196,7 +228,7 @@ fun MainUI(modifier: Modifier = Modifier, navController: NavController, gamesLis
             StartButton_port(
                 Modifier,
                 hasStartedGame,
-                startGame = { hasStartedGame = true }
+                startGame = { hasStartedGame = true; startSequence() }
             )
 
             ActionButtons_port(
@@ -274,6 +306,10 @@ fun SecondaryUI(modifier: Modifier = Modifier, navController: NavController, gam
 
 @Composable
 fun DetailUI(modifier: Modifier = Modifier, navController: NavController) {
+    BackHandler() {
+        navController.popBackStack()
+    }
+
 
 }
 @Composable
@@ -311,7 +347,12 @@ fun Title_land(modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun ColorGrid_port(modifier: Modifier = Modifier, seqS : String, onButtonClick: (Int) -> Unit) {
+fun ColorGrid_port(modifier: Modifier = Modifier, seqS : String, onButtonClick: (Int) -> Unit, highlightedIndex: Int? = null) {
+    val baseColors = listOf(boxR, boxG, boxB, boxM, boxY, boxC)
+    val colors = baseColors.mapIndexed { index, color ->
+        if (index == highlightedIndex) color.copy(alpha = 0.5f) else color
+    }
+
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -325,7 +366,7 @@ fun ColorGrid_port(modifier: Modifier = Modifier, seqS : String, onButtonClick: 
             Button(
                 onClick = { onButtonClick(0) },
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = boxR,
+                    containerColor = colors[0],
                     contentColor = Color.Black
                 ),
                 shape = RoundedCornerShape(btnRadius),
@@ -338,7 +379,7 @@ fun ColorGrid_port(modifier: Modifier = Modifier, seqS : String, onButtonClick: 
             Button(
                 onClick = { onButtonClick(1) },
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = boxG,
+                    containerColor = colors[1],
                     contentColor = Color.Black
                 ),
                 shape = RoundedCornerShape(btnRadius),
@@ -355,7 +396,7 @@ fun ColorGrid_port(modifier: Modifier = Modifier, seqS : String, onButtonClick: 
             Button(
                 onClick = { onButtonClick(2) },
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = boxB,
+                    containerColor = colors[2],
                     contentColor = Color.Black
                 ),
                 shape = RoundedCornerShape(btnRadius),
@@ -368,7 +409,7 @@ fun ColorGrid_port(modifier: Modifier = Modifier, seqS : String, onButtonClick: 
             Button(
                 onClick = { onButtonClick(3) },
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = boxM,
+                    containerColor = colors[3],
                     contentColor = Color.Black
                 ),
                 shape = RoundedCornerShape(btnRadius),
@@ -385,7 +426,7 @@ fun ColorGrid_port(modifier: Modifier = Modifier, seqS : String, onButtonClick: 
             Button(
                 onClick = { onButtonClick(4) },
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = boxY,
+                    containerColor = colors[4],
                     contentColor = Color.Black
                 ),
                 shape = RoundedCornerShape(btnRadius),
@@ -398,7 +439,7 @@ fun ColorGrid_port(modifier: Modifier = Modifier, seqS : String, onButtonClick: 
             Button(
                 onClick = { onButtonClick(5) },
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = boxC,
+                    containerColor = colors[5],
                     contentColor = Color.Black
                 ),
                 shape = RoundedCornerShape(btnRadius),
@@ -783,6 +824,10 @@ fun LanguageIcon(modifier : Modifier = Modifier) {
 
 //------------------------------------------------------------
 
+
+
+//------------------------------------------------------------
+
 fun appendColorToSequence(index: Int, s: String): String {
     val newColor = when(index) {
         0 -> "R"
@@ -795,6 +840,20 @@ fun appendColorToSequence(index: Int, s: String): String {
     }
 
     return if (s.isEmpty()) newColor else "$s, $newColor"
+}
+
+fun getIndexFromColor(c : Char) : Int {
+    val index = when(c) {
+        'R' -> 0
+        'G' -> 1
+        'B' -> 2
+        'M' -> 3
+        'Y' -> 4
+        'C' -> 5
+        else -> -1
+    }
+
+    return index
 }
 
 fun shortenSequence(maxChar : Int = 5, s: String) : String {
@@ -814,6 +873,11 @@ fun shortenSequence(maxChar : Int = 5, s: String) : String {
 
 fun countSequence(s : String) : Int {
     return s.length - (s.count{it == ' '} + s.count{it == ','})
+}
+
+fun addToRandomSequence(s : String) : String {
+    val r = Random.nextInt(0, 6)
+    return appendColorToSequence(r, s)
 }
 
 fun setLanguage(context: Context, languageCode: String) {
