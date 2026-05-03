@@ -126,6 +126,9 @@ fun MainUI(modifier: Modifier = Modifier, navController: NavController, gamesLis
     var sequenceString by rememberSaveable{ mutableStateOf("") }
     var proposedSequence by remember { mutableStateOf("") }
     var sequenceLenght = 0
+    var inputLenght = 0
+    var isPaused by rememberSaveable{ mutableStateOf(false) }
+    var isWritingSequence by rememberSaveable{ mutableStateOf(false) }
     var isShowingSequence by rememberSaveable{ mutableStateOf(false) }
     var hasStartedGame by rememberSaveable{ mutableStateOf(false) }
     val configuration = LocalConfiguration.current
@@ -175,7 +178,12 @@ fun MainUI(modifier: Modifier = Modifier, navController: NavController, gamesLis
                 ColorGrid_land(
                     Modifier,
                     sequenceString,
-                    onButtonClick = { index -> sequenceString = appendColorToSequence(index, sequenceString) }
+                    onButtonClick = { index ->
+                        if(!isShowingSequence) {
+                            sequenceString = appendColorToSequence(index, sequenceString)
+                        }
+                    },
+                    hIndex
                 )
             }
 
@@ -189,15 +197,20 @@ fun MainUI(modifier: Modifier = Modifier, navController: NavController, gamesLis
                 StartButton_land(
                     Modifier,
                     hasStartedGame,
-                    startGame = { hasStartedGame = true }
+                    startGame = {
+                        hasStartedGame = true
+                        startSequence()
+                    }
                 )
 
                 ActionButtons_land(
                     Modifier,
                     sequenceString,
-                    deleteSequence = { sequenceString = "" },
+                    pauseGame = { isPaused = !isPaused },
+                    isPaused,
+                    isShowingSequence,
+                    hasStartedGame,
                     navController,
-                    gamesList,
                     onAddGame
                 )
             }
@@ -215,7 +228,11 @@ fun MainUI(modifier: Modifier = Modifier, navController: NavController, gamesLis
             ColorGrid_port(
                 Modifier,
                 sequenceString,
-                onButtonClick = { index -> sequenceString = appendColorToSequence(index, sequenceString) },
+                onButtonClick = { index ->
+                    if(!isShowingSequence) {
+                        sequenceString = appendColorToSequence(index, sequenceString)
+                    }
+                },
                 hIndex
             )
 
@@ -228,15 +245,20 @@ fun MainUI(modifier: Modifier = Modifier, navController: NavController, gamesLis
             StartButton_port(
                 Modifier,
                 hasStartedGame,
-                startGame = { hasStartedGame = true; startSequence() }
+                startGame = {
+                    hasStartedGame = true
+                    startSequence()
+                }
             )
 
             ActionButtons_port(
                 Modifier,
                 sequenceString,
-                deleteSequence = { sequenceString = "" },
+                pauseGame = { isPaused = !isPaused },
+                isPaused,
+                isShowingSequence,
+                hasStartedGame,
                 navController,
-                gamesList,
                 onAddGame
             )
         }
@@ -453,7 +475,12 @@ fun ColorGrid_port(modifier: Modifier = Modifier, seqS : String, onButtonClick: 
 }
 
 @Composable
-fun ColorGrid_land(modifier: Modifier = Modifier, seqS : String, onButtonClick: (Int) -> Unit) {
+fun ColorGrid_land(modifier: Modifier = Modifier, seqS : String, onButtonClick: (Int) -> Unit, highlightedIndex: Int? = null) {
+    val baseColors = listOf(boxR, boxG, boxB, boxM, boxY, boxC)
+    val colors = baseColors.mapIndexed { index, color ->
+        if (index == highlightedIndex) color.copy(alpha = 0.5f) else color
+    }
+
     Column(
         modifier = Modifier
             .padding(start = matrixLeftPadding_land, top = matrixTopPadding_land),
@@ -465,7 +492,7 @@ fun ColorGrid_land(modifier: Modifier = Modifier, seqS : String, onButtonClick: 
             Button(
                 onClick = { onButtonClick(0) },
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = boxR,
+                    containerColor = colors[0],
                     contentColor = Color.Black
                 ),
                 shape = RoundedCornerShape(btnRadius),
@@ -478,7 +505,7 @@ fun ColorGrid_land(modifier: Modifier = Modifier, seqS : String, onButtonClick: 
             Button(
                 onClick = { onButtonClick(1) },
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = boxG,
+                    containerColor = colors[1],
                     contentColor = Color.Black
                 ),
                 shape = RoundedCornerShape(btnRadius),
@@ -495,7 +522,7 @@ fun ColorGrid_land(modifier: Modifier = Modifier, seqS : String, onButtonClick: 
             Button(
                 onClick = { onButtonClick(2) },
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = boxB,
+                    containerColor = colors[2],
                     contentColor = Color.Black
                 ),
                 shape = RoundedCornerShape(btnRadius),
@@ -508,7 +535,7 @@ fun ColorGrid_land(modifier: Modifier = Modifier, seqS : String, onButtonClick: 
             Button(
                 onClick = { onButtonClick(3) },
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = boxM,
+                    containerColor = colors[3],
                     contentColor = Color.Black
                 ),
                 shape = RoundedCornerShape(btnRadius),
@@ -525,7 +552,7 @@ fun ColorGrid_land(modifier: Modifier = Modifier, seqS : String, onButtonClick: 
             Button(
                 onClick = { onButtonClick(4) },
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = boxY,
+                    containerColor = colors[4],
                     contentColor = Color.Black
                 ),
                 shape = RoundedCornerShape(btnRadius),
@@ -538,7 +565,7 @@ fun ColorGrid_land(modifier: Modifier = Modifier, seqS : String, onButtonClick: 
             Button(
                 onClick = { onButtonClick(5) },
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = boxC,
+                    containerColor = colors[5],
                     contentColor = Color.Black
                 ),
                 shape = RoundedCornerShape(btnRadius),
@@ -552,12 +579,12 @@ fun ColorGrid_land(modifier: Modifier = Modifier, seqS : String, onButtonClick: 
 }
 
 @Composable
-fun SequenceText_port(modifier: Modifier = Modifier, seqS : String, state : Boolean) {
+fun SequenceText_port(modifier: Modifier = Modifier, seqS : String, playState : Boolean) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .padding(top = seqTextTopPadding_port)
-            .alpha(if(state) 1f else 0f),
+            .alpha(if(playState) 1f else 0f),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(stringResource(R.string.seq))
@@ -572,12 +599,12 @@ fun SequenceText_port(modifier: Modifier = Modifier, seqS : String, state : Bool
 }
 
 @Composable
-fun SequenceText_land(modifier: Modifier = Modifier, seqS : String, state : Boolean) {
+fun SequenceText_land(modifier: Modifier = Modifier, seqS : String, playState : Boolean) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .padding(top = seqTextTopPadding_land)
-            .alpha(if(state) 1f else 0f),
+            .alpha(if(playState) 1f else 0f),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(stringResource(R.string.seq))
@@ -591,7 +618,7 @@ fun SequenceText_land(modifier: Modifier = Modifier, seqS : String, state : Bool
 }
 
 @Composable
-fun StartButton_port(modifier: Modifier = Modifier, state : Boolean, startGame : () -> Unit) {
+fun StartButton_port(modifier: Modifier = Modifier, playState : Boolean, startGame : () -> Unit) {
     Row (
         modifier = Modifier
             .fillMaxWidth(),
@@ -602,8 +629,8 @@ fun StartButton_port(modifier: Modifier = Modifier, state : Boolean, startGame :
                 colors = ButtonDefaults.buttonColors(containerColor = startBtn),
                 modifier = Modifier
                     .size(width =  actionButtonsWidth_port, height = actionButtonsHeight_port)
-                    .alpha(if(!state) 1f else 0f),
-                enabled = !state
+                    .alpha(if(!playState) 1f else 0f),
+                enabled = !playState
             ) {
                 Text(stringResource(R.string.startBtn))
             }
@@ -611,7 +638,7 @@ fun StartButton_port(modifier: Modifier = Modifier, state : Boolean, startGame :
 }
 
 @Composable
-fun StartButton_land(modifier: Modifier = Modifier, state : Boolean, startGame : () -> Unit) {
+fun StartButton_land(modifier: Modifier = Modifier, playState : Boolean, startGame : () -> Unit) {
     Row (
         modifier = Modifier
             .fillMaxWidth()
@@ -623,8 +650,8 @@ fun StartButton_land(modifier: Modifier = Modifier, state : Boolean, startGame :
             colors = ButtonDefaults.buttonColors(containerColor = startBtn),
             modifier = Modifier
                 .size(width =  actionButtonsWidth_land, height = actionButtonsHeight_land)
-                .alpha(if(!state) 1f else 0f),
-            enabled = !state
+                .alpha(if(!playState) 1f else 0f),
+            enabled = !playState
         ) {
             Text(stringResource(R.string.startBtn))
         }
@@ -632,7 +659,7 @@ fun StartButton_land(modifier: Modifier = Modifier, state : Boolean, startGame :
 }
 
 @Composable
-fun ActionButtons_port(modifier: Modifier = Modifier, seqS : String, deleteSequence: () -> Unit, navController: NavController, gamesList : List<String>, onAddGame: (String) -> Unit) {
+fun ActionButtons_port(modifier: Modifier = Modifier, seqS : String, pauseGame: () -> Unit, pauseState : Boolean, showingState : Boolean, playState : Boolean, navController: NavController, onAddGame: (String) -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -640,21 +667,26 @@ fun ActionButtons_port(modifier: Modifier = Modifier, seqS : String, deleteSeque
         horizontalArrangement = Arrangement.SpaceEvenly
     ) {
         Button(
-            onClick = { deleteSequence() },
+            onClick = { pauseGame() },
             colors = ButtonDefaults.buttonColors(containerColor = cancBtn),
-            modifier = Modifier.size(width =  actionButtonsWidth_port, height = actionButtonsHeight_port)
+            modifier = Modifier
+                .size(width =  actionButtonsWidth_port, height = actionButtonsHeight_port)
+                .alpha(if(showingState) 1f else 0f),
+            enabled = showingState
         ) {
-            Text(stringResource(R.string.cancellaBtn))
+            Text(stringResource(if(pauseState) R.string.pauseBtn else R.string.resumeBtn))
         };
 
         Button(
             onClick = {
                 onAddGame(seqS)
                 navController.navigate("secondary")
-                deleteSequence()
             },
             colors = ButtonDefaults.buttonColors(containerColor = fineBtn),
-            modifier = Modifier.size(width =  actionButtonsWidth_port, height = actionButtonsHeight_port)
+            modifier = Modifier
+                .size(width =  actionButtonsWidth_port, height = actionButtonsHeight_port)
+                .alpha(if(playState) 1f else 0f),
+            enabled = playState
         ) {
             Text(stringResource(R.string.finePartitaBtn))
         };
@@ -662,7 +694,7 @@ fun ActionButtons_port(modifier: Modifier = Modifier, seqS : String, deleteSeque
 }
 
 @Composable
-fun ActionButtons_land(modifier: Modifier = Modifier, seqS : String, deleteSequence: () -> Unit, navController: NavController, gamesList : List<String>, onAddGame: (String) -> Unit) {
+fun ActionButtons_land(modifier: Modifier = Modifier, seqS : String, pauseGame: () -> Unit, pauseState : Boolean, showingState : Boolean, playState : Boolean, navController: NavController,  onAddGame: (String) -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -673,13 +705,15 @@ fun ActionButtons_land(modifier: Modifier = Modifier, seqS : String, deleteSeque
             onClick = {
                 onAddGame(seqS)
                 navController.navigate("secondary")
-                deleteSequence()
             },
             colors = ButtonDefaults.buttonColors(containerColor = fineBtn),
-            modifier = Modifier.size(
-                width = actionButtonsWidth_land,
-                height = actionButtonsHeight_land
-            )
+            modifier = Modifier
+                .size(
+                    width = actionButtonsWidth_land,
+                    height = actionButtonsHeight_land
+                )
+                .alpha(if(playState) 1f else 0f),
+            enabled = playState
         ) {
             Text(stringResource(R.string.finePartitaBtn))
         };
@@ -692,14 +726,17 @@ fun ActionButtons_land(modifier: Modifier = Modifier, seqS : String, deleteSeque
         horizontalArrangement = Arrangement.SpaceEvenly
     ) {
         Button(
-            onClick = { deleteSequence() },
+            onClick = { pauseGame() },
             colors = ButtonDefaults.buttonColors(containerColor = cancBtn),
-            modifier = Modifier.size(
-                width = actionButtonsWidth_land,
-                height = actionButtonsHeight_land
-            )
+            modifier = Modifier
+                .size(
+                    width = actionButtonsWidth_land,
+                    height = actionButtonsHeight_land
+                )
+                .alpha(if(showingState) 1f else 0f),
+            enabled = showingState
         ) {
-            Text(stringResource(R.string.cancellaBtn))
+            Text(stringResource(if(pauseState) R.string.pauseBtn else R.string.resumeBtn))
         }
     }
 }

@@ -6,5 +6,7 @@
     <string name="cancellaBtn">ELIMINA</string>
     <string name="finePartitaBtn">FIN DEL JUEGO</string>
     <string name="indietroBtn">VOLVER</string>
+    <string name="pauseBtn">PAUSA</string>
+    <string name="resumeBtn">CONTINUA</string>
     <string name="langIcon">Cambiar idioma</string>
 </resources>
