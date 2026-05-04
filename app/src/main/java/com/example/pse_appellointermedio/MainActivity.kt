@@ -163,7 +163,19 @@ fun MainUI(modifier: Modifier = Modifier, navController: NavController, gamesLis
     }
 
     val addAndCheckColor : (Int) -> Unit = {i ->
+        if(!isShowingSequence) {
+            sequenceString = appendColorToSequence(i, sequenceString)
+            inputLength++
 
+            if(sequenceString == proposedSequence.subSequence(0, sequenceString.length).toString()) {
+                if(inputLength == sequenceLength)
+                    startSequence()
+                //Log.i("seq", "match")
+            } else {
+                //Error screen
+                //.i("seq", "mismatch")
+            }
+        }
     }
 
 
@@ -236,21 +248,7 @@ fun MainUI(modifier: Modifier = Modifier, navController: NavController, gamesLis
                 Modifier,
                 sequenceString,
                 onButtonClick = { index ->
-                    //addAndCheckColor(index)
-
-                    if(!isShowingSequence) {
-                        sequenceString = appendColorToSequence(index, sequenceString)
-                        inputLength++
-
-                        if(sequenceString == proposedSequence.subSequence(0, sequenceString.length).toString()) {
-                            if(inputLength == sequenceLength)
-                                startSequence()
-                            //Log.i("seq", "match")
-                        } else {
-                            //Error screen
-                            //.i("seq", "mismatch")
-                        }
-                    }
+                    addAndCheckColor(index)
                 },
                 hIndex
             )
