@@ -8,6 +8,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.ui.res.painterResource
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -51,6 +52,7 @@ import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material3.AlertDialog
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
@@ -125,10 +127,9 @@ class MainActivity : ComponentActivity() {
 fun MainUI(modifier: Modifier = Modifier, navController: NavController, gamesList : List<String>, onAddGame: (String) -> Unit) {
     var sequenceString by rememberSaveable{ mutableStateOf("") }
     var proposedSequence by remember { mutableStateOf("") }
-    var sequenceLenght = 0
-    var inputLenght = 0
+    var sequenceLength by remember{ mutableStateOf(0)}
+    var inputLength by remember{ mutableStateOf(0)}
     var isPaused by rememberSaveable{ mutableStateOf(false) }
-    var isWritingSequence by rememberSaveable{ mutableStateOf(false) }
     var isShowingSequence by rememberSaveable{ mutableStateOf(false) }
     var hasStartedGame by rememberSaveable{ mutableStateOf(false) }
     val configuration = LocalConfiguration.current
@@ -139,22 +140,23 @@ fun MainUI(modifier: Modifier = Modifier, navController: NavController, gamesLis
     var hIndex by remember { mutableStateOf<Int?>(null) }
     val startSequence : () -> Unit = {  //atm it stops if screen is rotated
         job = scope.launch {
-            while (true) {
-                proposedSequence = addToRandomSequence(proposedSequence)
-                val s = proposedSequence.replace(", ", "")
-                sequenceLenght++
+            delay(200)
+            inputLength = 0
+            sequenceString = ""
+            delay(200)
 
-                isShowingSequence = true
-                for (c in s) {
-                    hIndex = getIndexFromColor(c)
-                    delay(600)
-                    hIndex = null
-                    delay(200)
-                }
-                isShowingSequence = false
+            isShowingSequence = true
+            proposedSequence = addToRandomSequence(proposedSequence)
+            val s = proposedSequence.replace(", ", "")
+            sequenceLength++
 
-                delay(2000)
+            for (c in s) {
+                hIndex = getIndexFromColor(c)
+                delay(600)
+                hIndex = null
+                delay(200)
             }
+            isShowingSequence = false
         }
     }
 
@@ -231,6 +233,16 @@ fun MainUI(modifier: Modifier = Modifier, navController: NavController, gamesLis
                 onButtonClick = { index ->
                     if(!isShowingSequence) {
                         sequenceString = appendColorToSequence(index, sequenceString)
+                        inputLength++
+
+                        if(inputLength == sequenceLength) {
+                            if(sequenceString == proposedSequence) {
+                                startSequence()
+                            } else {
+                                //Error screen
+                            }
+
+                        }
                     }
                 },
                 hIndex
