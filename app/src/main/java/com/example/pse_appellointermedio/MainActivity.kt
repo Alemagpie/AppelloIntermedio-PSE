@@ -134,13 +134,15 @@ fun MainUI(modifier: Modifier = Modifier, navController: NavController, gamesLis
     var hasStartedGame by rememberSaveable{ mutableStateOf(false) }
     val configuration = LocalConfiguration.current
 
+
+
     val scope = rememberCoroutineScope()
     var job by remember { mutableStateOf<Job?>(null) }
 
     var hIndex by remember { mutableStateOf<Int?>(null) }
     val startSequence : () -> Unit = {  //atm it stops if screen is rotated
         job = scope.launch {
-            delay(200)
+            delay(500)
             inputLength = 0
             sequenceString = ""
             delay(200)
@@ -160,6 +162,9 @@ fun MainUI(modifier: Modifier = Modifier, navController: NavController, gamesLis
         }
     }
 
+    val addAndCheckColor : (Int) -> Unit = {i ->
+
+    }
 
 
     if(configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
@@ -231,17 +236,19 @@ fun MainUI(modifier: Modifier = Modifier, navController: NavController, gamesLis
                 Modifier,
                 sequenceString,
                 onButtonClick = { index ->
+                    //addAndCheckColor(index)
+
                     if(!isShowingSequence) {
                         sequenceString = appendColorToSequence(index, sequenceString)
                         inputLength++
 
-                        if(inputLength == sequenceLength) {
-                            if(sequenceString == proposedSequence) {
+                        if(sequenceString == proposedSequence.subSequence(0, sequenceString.length).toString()) {
+                            if(inputLength == sequenceLength)
                                 startSequence()
-                            } else {
-                                //Error screen
-                            }
-
+                            //Log.i("seq", "match")
+                        } else {
+                            //Error screen
+                            //.i("seq", "mismatch")
                         }
                     }
                 },
