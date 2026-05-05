@@ -127,17 +127,24 @@ class MainActivity : ComponentActivity() {
 fun MainUI(modifier: Modifier = Modifier, navController: NavController, gamesList : List<String>, onAddGame: (String) -> Unit) {
     var sequenceString by rememberSaveable{ mutableStateOf("") }
     var proposedSequence by remember { mutableStateOf("") }
-    var sequenceLength by remember{ mutableStateOf(0)}
-    var inputLength by remember{ mutableStateOf(0)}
+    var sequenceLength by remember{ mutableIntStateOf(0)}
+    var inputLength by remember{ mutableIntStateOf(0)}
     var isPaused by rememberSaveable{ mutableStateOf(false) }
     var isShowingSequence by rememberSaveable{ mutableStateOf(false) }
     var hasStartedGame by rememberSaveable{ mutableStateOf(false) }
     val configuration = LocalConfiguration.current
 
-    val scope = rememberCoroutineScope()
-    var job by remember { mutableStateOf<Job?>(null) }
+    val context = LocalContext.current
+    val soundPlayer = remember{ SoundPlayer(context) }
+    val playColorAudio : (Int) -> Unit = {index ->
+        if(index in 0 .. 6) {
+            soundPlayer.playSound(index)
+        }
+    }
 
-    var hIndex by remember { mutableStateOf<Int?>(null) }
+    val scope = rememberCoroutineScope()
+    var job by remember{ mutableStateOf<Job?>(null) }
+    var hIndex by remember{ mutableStateOf<Int?>(null) }
     val startSequence : () -> Unit = {  //atm it stops if screen is rotated
         job = scope.launch {
             delay(500)
@@ -152,6 +159,7 @@ fun MainUI(modifier: Modifier = Modifier, navController: NavController, gamesLis
 
             for (c in s) {
                 hIndex = getIndexFromColor(c)
+                playColorAudio(hIndex as Int)
                 delay(600)
                 hIndex = null
                 delay(200)
@@ -248,6 +256,7 @@ fun MainUI(modifier: Modifier = Modifier, navController: NavController, gamesLis
                 sequenceString,
                 onButtonClick = { index ->
                     addAndCheckColor(index)
+                    if(!isShowingSequence) playColorAudio(index)
                 },
                 hIndex
             )
@@ -942,10 +951,4 @@ fun setLanguage(context: Context, languageCode: String) {
     val config = context.resources.configuration
     config.setLocale(locale)
     context.resources.updateConfiguration(config, context.resources.displayMetrics)
-}
-
-fun playAudio(index : Int) {
-    if(index in 0 .. 6) {
-        
-    }
 }
