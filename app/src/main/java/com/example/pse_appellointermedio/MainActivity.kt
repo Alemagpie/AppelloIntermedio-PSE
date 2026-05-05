@@ -134,8 +134,6 @@ fun MainUI(modifier: Modifier = Modifier, navController: NavController, gamesLis
     var hasStartedGame by rememberSaveable{ mutableStateOf(false) }
     val configuration = LocalConfiguration.current
 
-
-
     val scope = rememberCoroutineScope()
     var job by remember { mutableStateOf<Job?>(null) }
 
@@ -174,6 +172,7 @@ fun MainUI(modifier: Modifier = Modifier, navController: NavController, gamesLis
             } else {
                 //Error screen
                 //.i("seq", "mismatch")
+
             }
         }
     }
@@ -807,7 +806,10 @@ fun GamesListItem(modifier: Modifier = Modifier, pressedCount : String, pressedS
 
         Text(
             modifier = Modifier
-                .padding(listItemPadding),
+                .padding(listItemPadding)
+                .clickable(onClick = {
+                    //navController.navigate(pressedCount + "_" + pressedSeq)
+                }),
             text = pressedSeq
         )
     }
@@ -940,4 +942,10 @@ fun setLanguage(context: Context, languageCode: String) {
     val config = context.resources.configuration
     config.setLocale(locale)
     context.resources.updateConfiguration(config, context.resources.displayMetrics)
+}
+
+fun playAudio(index : Int) {
+    if(index in 0 .. 6) {
+
+    }
 }

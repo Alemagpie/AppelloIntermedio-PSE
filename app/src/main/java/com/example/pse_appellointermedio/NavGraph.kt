@@ -17,11 +17,11 @@ fun NavGraph(modifier: Modifier = Modifier) {
 
     var allGames = rememberSaveable{ mutableListOf<String>() }
 
-    NavHost(navController = navController, startDestination = "main") {
-        composable("main") {
+    NavHost(navController = navController, startDestination = "colorGrid") {
+        composable("colorGrid") {
             MainUI(navController = navController, gamesList = allGames, onAddGame = { entry -> allGames += entry })
         }
-        composable("secondary") {
+        composable("gamesList") {
             SecondaryUI(navController = navController, gamesList = allGames)
         }
         composable("detail/{game}") { backStackEntry ->
