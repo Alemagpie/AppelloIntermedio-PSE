@@ -1,6 +1,6 @@
 <resources>
-    <string name="app_name">PSE - IntermediateAppeal</string>
-    <string name="title">PSE - INTERMEDIATE APPEAL</string>
+    <string name="app_name">PSE - FinalAppeal</string>
+    <string name="title">PSE - Final APPEAL</string>
     <string name="seq">Your sequence:</string>
     <string name="startBtn">START GAME</string>
     <string name="cancellaBtn">DELETE</string>

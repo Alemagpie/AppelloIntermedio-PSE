@@ -39,3 +39,6 @@ val backBtn = Color(0xFF32A883)
 //List stuff
 val listOutline_dark = Color(0xFFF2F2F2)
 val listOutline_light = Color(0xFF1F1F1F)
+
+//Other
+val errorColor = Color(0xFFDC2C2C)

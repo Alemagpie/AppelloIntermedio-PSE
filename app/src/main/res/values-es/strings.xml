@@ -1,6 +1,6 @@
 <resources>
-    <string name="app_name">PSE - ApelaciónIntermedia</string>
-    <string name="title">PSE - APELACION INTERMEDIA</string>
+    <string name="app_name">PSE - ApelaciónFinal</string>
+    <string name="title">PSE - APELACION FINAL</string>
     <string name="seq">Tu secuencia:</string>
     <string name="startBtn">EMPEZAR EL JUEGO</string>
     <string name="cancellaBtn">ELIMINA</string>
