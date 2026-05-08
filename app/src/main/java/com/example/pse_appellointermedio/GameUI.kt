@@ -90,7 +90,7 @@ fun MainUI(modifier: Modifier = Modifier, navController: NavController, gamesLis
                     viewModel.sequenceString,
                     onButtonClick = { index ->
                         viewModel.addAndCheckColor(index, playColorAudio)
-                        if(!viewModel.isShowingSequence) playColorAudio(index)
+                        if(viewModel.hasStartedGame && !viewModel.isShowingSequence) playColorAudio(index)
                     },
                     viewModel.hIndex
                 )
@@ -141,7 +141,7 @@ fun MainUI(modifier: Modifier = Modifier, navController: NavController, gamesLis
                 viewModel.sequenceString,
                 onButtonClick = { index ->
                     viewModel.addAndCheckColor(index, playColorAudio)
-                    if(!viewModel.isShowingSequence) playColorAudio(index)
+                    if(viewModel.hasStartedGame && !viewModel.isShowingSequence) playColorAudio(index)
                 },
                 viewModel.hIndex
             )
