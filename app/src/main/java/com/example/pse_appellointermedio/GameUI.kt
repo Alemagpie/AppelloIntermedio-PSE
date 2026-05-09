@@ -54,7 +54,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @Composable
-fun MainUI(modifier: Modifier = Modifier, navController: NavController, gamesList : List<String>, onAddGame: (String) -> Unit) {
+fun MainUI(modifier: Modifier = Modifier, navController: NavController) {
     BackHandler() {
         navController.popBackStack()
     }
@@ -126,7 +126,7 @@ fun MainUI(modifier: Modifier = Modifier, navController: NavController, gamesLis
                     viewModel.isShowingSequence,
                     viewModel.hasStartedGame,
                     navController,
-                    onAddGame
+                    onAddGame = {}
                 )
             }
         }
@@ -176,7 +176,11 @@ fun MainUI(modifier: Modifier = Modifier, navController: NavController, gamesLis
                 viewModel.isShowingSequence,
                 viewModel.hasStartedGame,
                 navController,
-                onAddGame
+                onAddGame = {
+                    if(!(viewModel.isShowingSequence && viewModel.sequenceLength == 1)) {
+                        viewModel.addGame()
+                    }
+                }
             )
         }
     }

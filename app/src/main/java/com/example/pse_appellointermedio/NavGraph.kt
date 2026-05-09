@@ -15,14 +15,12 @@ import androidx.navigation.compose.rememberNavController
 fun NavGraph(modifier: Modifier = Modifier) {
     val navController = rememberNavController()
 
-    var allGames = rememberSaveable{ mutableListOf<String>() }
-
     NavHost(navController = navController, startDestination = "gamesList") {
         composable("gamesList") {
-            ListUI(navController = navController, gamesList = allGames)
+            ListUI(navController = navController)
         }
         composable("colorGrid") {
-            MainUI(navController = navController, gamesList = allGames, onAddGame = { entry -> allGames += entry })
+            MainUI(navController = navController)
         }
         composable("detail/{game}") { backStackEntry ->
             val game = backStackEntry.arguments?.getString("game")

@@ -1,6 +1,10 @@
 package com.example.pse_appellointermedio
 
 import android.content.Context
+import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.withStyle
 import com.example.pse_appellointermedio.ui.theme.errorColor
 import kotlin.random.Random
 
@@ -70,18 +74,17 @@ fun setLanguage(context: Context, languageCode: String) {
     context.resources.updateConfiguration(config, context.resources.displayMetrics)
 }
 
-fun styleStringFromIndex(index : Int, input : String) : String {
-    if(index < 0 || index > input.length) {
-        return input
+//Styles in black the part of the string before the index (as in number of color pressed not string index) and in red the rest
+fun styleStringFromLength(index : Int, input : String) : AnnotatedString {
+    return buildAnnotatedString {
+        if(index < 1 || index > countSequence(input)) {
+            append(input)
+        } else {
+            val i = 3 * (index - 1)
+            append(input.substring(0, i))
+            withStyle(style = SpanStyle(color = errorColor)) {
+                append(input.substring(i))
+            }
+        }
     }
-
-    val firstPart = input.substring(0, index)
-    val secondPart = input.substring(index + 1, input.length)
-    val s = "<font>" +
-            firstPart +
-            "</font> <font color=${errorColor}>" +
-            secondPart +
-            "</font>"
-
-    return s
 }

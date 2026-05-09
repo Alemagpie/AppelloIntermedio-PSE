@@ -33,17 +33,20 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.core.content.edit
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.pse_appellointermedio.ui.theme.startGameBtn
 import com.example.pse_appellointermedio.ui.theme.errorColor
 
 @Composable
-fun ListUI(modifier: Modifier = Modifier, navController: NavController, gamesList : List<String> ) {
-    val configuration = LocalConfiguration.current
+fun ListUI(modifier: Modifier = Modifier, navController: NavController) {
+    val viewModel : GameViewModel = viewModel()
 
+    val configuration = LocalConfiguration.current
     if (configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
         Row(
             modifier = Modifier
@@ -53,7 +56,7 @@ fun ListUI(modifier: Modifier = Modifier, navController: NavController, gamesLis
         ) {
             GamesList_land(
                 Modifier,
-                gamesList
+                viewModel.gamesList
             )
 
             StartButton_land(
@@ -76,7 +79,7 @@ fun ListUI(modifier: Modifier = Modifier, navController: NavController, gamesLis
             ) {
                 GamesList_port(
                     Modifier,
-                    gamesList
+                    viewModel.gamesList
                 )
             }
 
@@ -95,7 +98,24 @@ fun ListUI(modifier: Modifier = Modifier, navController: NavController, gamesLis
 }
 
 @Composable
-fun GamesList_port(modifier: Modifier = Modifier, gamesList : List<String>) {
+fun GamesList_port(modifier: Modifier = Modifier, gamesList : List<GameRecord>) {
+    LazyColumn (
+        modifier = Modifier
+            .size(width = listSizeX_port, height = listSizeY_port)
+            .border(width = 1.dp, color = MaterialTheme.colorScheme.outline, shape = RoundedCornerShape(8.dp))
+    )
+    {
+        items(gamesList.size) { i ->
+            GamesListItem(
+                pressedCount = gamesList[i].errorIndex.toString(),
+                pressedSeq = styleStringFromLength(gamesList[i].errorIndex + 1, shortenSequence(s= gamesList[i].sequence))
+            )
+        }
+    }
+}
+
+@Composable
+fun GamesList_land(modifier: Modifier = Modifier, gamesList : List<GameRecord>) {
     LazyColumn (
         modifier = Modifier
             .size(width = listSizeX_port, height = listSizeY_port)
@@ -103,33 +123,16 @@ fun GamesList_port(modifier: Modifier = Modifier, gamesList : List<String>) {
     )
     {
         items(gamesList.size) { s ->
-            GamesListItem(
-                pressedCount = countSequence(gamesList[s]).toString(),
-                pressedSeq = shortenSequence(s = gamesList[s])
-            )
+            /*GamesListItem(
+                //pressedCount = countSequence(gamesList[s]).toString(),
+               // pressedSeq = shortenSequence(s = gamesList[s])
+            )*/
         }
     }
 }
 
 @Composable
-fun GamesList_land(modifier: Modifier = Modifier, gamesList : List<String>) {
-    LazyColumn (
-        modifier = Modifier
-            .size(width = listSizeX_port, height = listSizeY_port)
-            .border(width = 1.dp, color = MaterialTheme.colorScheme.outline, shape = RoundedCornerShape(8.dp))
-    )
-    {
-        items(gamesList.size) { s ->
-            GamesListItem(
-                pressedCount = countSequence(gamesList[s]).toString(),
-                pressedSeq = shortenSequence(s = gamesList[s])
-            )
-        }
-    }
-}
-
-@Composable
-fun GamesListItem(modifier: Modifier = Modifier, pressedCount : String, pressedSeq : String) {
+fun GamesListItem(modifier: Modifier = Modifier, pressedCount : String, pressedSeq : AnnotatedString) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
