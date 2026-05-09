@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
+import android.text.Html
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
@@ -36,14 +37,11 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.core.content.edit
 import androidx.navigation.NavController
-import com.example.pse_appellointermedio.ui.theme.backBtn
+import com.example.pse_appellointermedio.ui.theme.startGameBtn
+import com.example.pse_appellointermedio.ui.theme.errorColor
 
 @Composable
-fun SecondaryUI(modifier: Modifier = Modifier, navController: NavController, gamesList : List<String> ) {
-    BackHandler() {
-        navController.popBackStack()
-    }
-
+fun ListUI(modifier: Modifier = Modifier, navController: NavController, gamesList : List<String> ) {
     val configuration = LocalConfiguration.current
 
     if (configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
@@ -58,7 +56,7 @@ fun SecondaryUI(modifier: Modifier = Modifier, navController: NavController, gam
                 gamesList
             )
 
-            BackButton_land(
+            StartButton_land(
                 Modifier,
                 navController
             )
@@ -86,7 +84,7 @@ fun SecondaryUI(modifier: Modifier = Modifier, navController: NavController, gam
                 modifier = Modifier
                     .fillMaxWidth()
             ) {
-                BackButton_port(
+                StartButton_port(
                     Modifier,
                     navController
                 )
@@ -155,38 +153,38 @@ fun GamesListItem(modifier: Modifier = Modifier, pressedCount : String, pressedS
 }
 
 @Composable
-fun BackButton_port(modifier: Modifier = Modifier, navController: NavController) {
+fun StartButton_port(modifier: Modifier = Modifier, navController: NavController) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(top = backButtonTopPadding_port),
+            .padding(top = startGameButtonTopPadding_port),
         horizontalArrangement = Arrangement.SpaceEvenly
     ) {
         Button(
-            onClick = { navController.popBackStack() },
-            colors = ButtonDefaults.buttonColors(containerColor = backBtn),
+            onClick = { navController.navigate("colorGrid") },
+            colors = ButtonDefaults.buttonColors(containerColor = startGameBtn),
             modifier = Modifier.size(
-                width = backButtonWidth_port,
-                height = backButtonHeight_port
+                width = startGameButtonWidth_port,
+                height = startGameButtonHeight_port
             )
         ) {
-            Text(stringResource(R.string.indietroBtn))
+            Text(stringResource(R.string.startBtn))
         }
 
     }
 }
 
 @Composable
-fun BackButton_land(modifier: Modifier = Modifier, navController: NavController) {
+fun StartButton_land(modifier: Modifier = Modifier, navController: NavController) {
     Button(
-        onClick = { navController.popBackStack() },
-        colors = ButtonDefaults.buttonColors(containerColor = backBtn),
+        onClick = { navController.navigate("colorGrid") },
+        colors = ButtonDefaults.buttonColors(containerColor = startGameBtn),
         modifier = Modifier.size(
-            width = backButtonWidth_land,
-            height = backButtonHeight_land
+            width = startGameButtonWidth_land,
+            height = startGameButtonHeight_land
         )
     ) {
-        Text(stringResource(R.string.indietroBtn))
+        Text(stringResource(R.string.startBtn))
     }
 }
 

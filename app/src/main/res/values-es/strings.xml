@@ -3,9 +3,9 @@
     <string name="title">PSE - APELACION FINAL</string>
     <string name="seq">Tu secuencia:</string>
     <string name="startBtn">EMPEZAR EL JUEGO</string>
-    <string name="cancellaBtn">ELIMINA</string>
+    <string name="deleteBtn">ELIMINA</string>
     <string name="finePartitaBtn">FIN DEL JUEGO</string>
-    <string name="indietroBtn">VOLVER</string>
+    <string name="backBtn">VOLVER</string>
     <string name="pauseBtn">PAUSA</string>
     <string name="resumeBtn">CONTINUA</string>
     <string name="langIcon">Cambiar idioma</string>

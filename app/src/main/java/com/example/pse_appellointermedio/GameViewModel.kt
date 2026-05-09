@@ -67,7 +67,7 @@ class GameViewModel() : ViewModel() {
 
     //Adds color to user's sequence and checks for errors
     val addAndCheckColor : (Int, (Int) -> Unit) -> Unit = {i, playColorAudio ->
-        if(!isShowingSequence && proposedSequence.isNotEmpty()) {
+        if(!isShowingSequence && proposedSequence.isNotEmpty() && !errorState) {
             sequenceString = appendColorToSequence(i, sequenceString)
             inputLength++
 

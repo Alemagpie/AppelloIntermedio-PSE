@@ -3,9 +3,9 @@
     <string name="title">PSE - APPELLO FINALE</string>
     <string name="seq">La tua sequenza:</string>
     <string name="startBtn">INIZIA PARTITA</string>
-    <string name="cancellaBtn">CANCELLA</string>
+    <string name="deleteBtn">CANCELLA</string>
     <string name="finePartitaBtn">FINE PARTITA</string>
-    <string name="indietroBtn">TORNA INDIETRO</string>
+    <string name="backBtn">TORNA INDIETRO</string>
     <string name="pauseBtn">PAUSA</string>
     <string name="resumeBtn">RIPRENDI</string>
     <string name="langIcon">Cambia lingua</string>

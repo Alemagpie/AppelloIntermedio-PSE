@@ -17,12 +17,12 @@ fun NavGraph(modifier: Modifier = Modifier) {
 
     var allGames = rememberSaveable{ mutableListOf<String>() }
 
-    NavHost(navController = navController, startDestination = "colorGrid") {
+    NavHost(navController = navController, startDestination = "gamesList") {
+        composable("gamesList") {
+            ListUI(navController = navController, gamesList = allGames)
+        }
         composable("colorGrid") {
             MainUI(navController = navController, gamesList = allGames, onAddGame = { entry -> allGames += entry })
-        }
-        composable("gamesList") {
-            SecondaryUI(navController = navController, gamesList = allGames)
         }
         composable("detail/{game}") { backStackEntry ->
             val game = backStackEntry.arguments?.getString("game")

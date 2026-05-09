@@ -3,9 +3,9 @@
     <string name="title">PSE - Final APPEAL</string>
     <string name="seq">Your sequence:</string>
     <string name="startBtn">START GAME</string>
-    <string name="cancellaBtn">DELETE</string>
+    <string name="deleteBtn">DELETE</string>
     <string name="finePartitaBtn">END GAME</string>
-    <string name="indietroBtn">GO BACK</string>
+    <string name="backBtn">GO BACK</string>
     <string name="pauseBtn">PAUSE</string>
     <string name="resumeBtn">RESUME</string>
     <string name="langIcon">Change language</string>

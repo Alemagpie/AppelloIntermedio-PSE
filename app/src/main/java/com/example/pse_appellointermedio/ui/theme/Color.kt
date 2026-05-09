@@ -34,7 +34,7 @@ val boxC = Color(0xFF32D1D1)
 val startBtn = Color(0xFF0076C4)
 val cancBtn = Color(0xFFA8A8A8)
 val fineBtn = Color(0xFF73A9FF)
-val backBtn = Color(0xFF32A883)
+val startGameBtn = Color(0xFF32A883)
 
 //List stuff
 val listOutline_dark = Color(0xFFF2F2F2)

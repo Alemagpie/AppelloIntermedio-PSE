@@ -1,6 +1,7 @@
 package com.example.pse_appellointermedio
 
 import android.content.res.Configuration
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -54,6 +55,10 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun MainUI(modifier: Modifier = Modifier, navController: NavController, gamesList : List<String>, onAddGame: (String) -> Unit) {
+    BackHandler() {
+        navController.popBackStack()
+    }
+
     //ViewModel that holds states, sequences and coroutines
     val viewModel : GameViewModel = viewModel()
 
@@ -116,6 +121,7 @@ fun MainUI(modifier: Modifier = Modifier, navController: NavController, gamesLis
                     Modifier,
                     viewModel.sequenceString,
                     pauseGame = { viewModel.isPaused = !viewModel.isPaused },
+                    viewModel.errorState,
                     viewModel.isPaused,
                     viewModel.isShowingSequence,
                     viewModel.hasStartedGame,
@@ -165,6 +171,7 @@ fun MainUI(modifier: Modifier = Modifier, navController: NavController, gamesLis
                 Modifier,
                 viewModel.sequenceString,
                 pauseGame = { viewModel.isPaused = !viewModel.isPaused },
+                viewModel.errorState,
                 viewModel.isPaused,
                 viewModel.isShowingSequence,
                 viewModel.hasStartedGame,
@@ -508,7 +515,7 @@ fun StartButton_land(modifier: Modifier = Modifier, playState : Boolean, startGa
 }
 
 @Composable
-fun ActionButtons_port(modifier: Modifier = Modifier, seqS : String, pauseGame: () -> Unit, pauseState : Boolean, showingState : Boolean, playState : Boolean, navController: NavController, onAddGame: (String) -> Unit) {
+fun ActionButtons_port(modifier: Modifier = Modifier, seqS : String, pauseGame: () -> Unit, errorState : Boolean, pauseState : Boolean, showingState : Boolean, playState : Boolean, navController: NavController, onAddGame: (String) -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -529,12 +536,12 @@ fun ActionButtons_port(modifier: Modifier = Modifier, seqS : String, pauseGame: 
         Button(
             onClick = {
                 onAddGame(seqS)
-                navController.navigate("secondary")
+                navController.navigate("gamesList")
             },
             colors = ButtonDefaults.buttonColors(containerColor = fineBtn),
             modifier = Modifier
                 .size(width =  actionButtonsWidth_port, height = actionButtonsHeight_port)
-                .alpha(if(playState) 1f else 0f),
+                .alpha(if(playState && !errorState) 1f else 0f),
             enabled = playState
         ) {
             Text(stringResource(R.string.finePartitaBtn))
@@ -543,7 +550,7 @@ fun ActionButtons_port(modifier: Modifier = Modifier, seqS : String, pauseGame: 
 }
 
 @Composable
-fun ActionButtons_land(modifier: Modifier = Modifier, seqS : String, pauseGame: () -> Unit, pauseState : Boolean, showingState : Boolean, playState : Boolean, navController: NavController,  onAddGame: (String) -> Unit) {
+fun ActionButtons_land(modifier: Modifier = Modifier, seqS : String, pauseGame: () -> Unit, errorState : Boolean, pauseState : Boolean, showingState : Boolean, playState : Boolean, navController: NavController,  onAddGame: (String) -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -553,7 +560,7 @@ fun ActionButtons_land(modifier: Modifier = Modifier, seqS : String, pauseGame: 
         Button(
             onClick = {
                 onAddGame(seqS)
-                navController.navigate("secondary")
+                navController.navigate("gamesList")
             },
             colors = ButtonDefaults.buttonColors(containerColor = fineBtn),
             modifier = Modifier
@@ -561,7 +568,7 @@ fun ActionButtons_land(modifier: Modifier = Modifier, seqS : String, pauseGame: 
                     width = actionButtonsWidth_land,
                     height = actionButtonsHeight_land
                 )
-                .alpha(if(playState) 1f else 0f),
+                .alpha(if(playState && !errorState) 1f else 0f),
             enabled = playState
         ) {
             Text(stringResource(R.string.finePartitaBtn))

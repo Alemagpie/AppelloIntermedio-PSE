@@ -1,6 +1,7 @@
 package com.example.pse_appellointermedio
 
 import android.content.Context
+import com.example.pse_appellointermedio.ui.theme.errorColor
 import kotlin.random.Random
 
 //Takes in a string and a color index, returns string with new color added
@@ -67,4 +68,20 @@ fun setLanguage(context: Context, languageCode: String) {
     val config = context.resources.configuration
     config.setLocale(locale)
     context.resources.updateConfiguration(config, context.resources.displayMetrics)
+}
+
+fun styleStringFromIndex(index : Int, input : String) : String {
+    if(index < 0 || index > input.length) {
+        return input
+    }
+
+    val firstPart = input.substring(0, index)
+    val secondPart = input.substring(index + 1, input.length)
+    val s = "<font>" +
+            firstPart +
+            "</font> <font color=${errorColor}>" +
+            secondPart +
+            "</font>"
+
+    return s
 }
