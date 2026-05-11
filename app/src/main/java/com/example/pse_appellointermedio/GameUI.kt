@@ -70,7 +70,6 @@ fun MainUI(modifier: Modifier = Modifier, navController: NavController, viewMode
         val length = if(viewModel.errorState) viewModel.inputLength - 1 else viewModel.inputLength
         addGame(length, viewModel.proposedSequence)
         navController.popBackStack()
-        viewModel.resetState()
     }
 
     //Sound stuff
