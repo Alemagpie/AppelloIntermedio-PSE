@@ -4,8 +4,7 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
-import android.text.Html
-import androidx.activity.compose.BackHandler
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -43,8 +42,7 @@ import com.example.pse_appellointermedio.ui.theme.startGameBtn
 import com.example.pse_appellointermedio.ui.theme.errorColor
 
 @Composable
-fun ListUI(modifier: Modifier = Modifier, navController: NavController) {
-    val viewModel : GameViewModel = viewModel()
+fun ListUI(modifier: Modifier = Modifier, navController: NavController, viewModel: GameViewModel) {
 
     val configuration = LocalConfiguration.current
     if (configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
@@ -56,7 +54,7 @@ fun ListUI(modifier: Modifier = Modifier, navController: NavController) {
         ) {
             GamesList_land(
                 Modifier,
-                viewModel.gamesList
+                viewModel
             )
 
             StartButton_land(
@@ -79,7 +77,7 @@ fun ListUI(modifier: Modifier = Modifier, navController: NavController) {
             ) {
                 GamesList_port(
                     Modifier,
-                    viewModel.gamesList
+                    viewModel
                 )
             }
 
@@ -98,7 +96,8 @@ fun ListUI(modifier: Modifier = Modifier, navController: NavController) {
 }
 
 @Composable
-fun GamesList_port(modifier: Modifier = Modifier, gamesList : List<GameRecord>) {
+fun GamesList_port(modifier: Modifier = Modifier, viewModel : GameViewModel) {
+    val gamesList = viewModel.gamesList
     LazyColumn (
         modifier = Modifier
             .size(width = listSizeX_port, height = listSizeY_port)
@@ -115,18 +114,19 @@ fun GamesList_port(modifier: Modifier = Modifier, gamesList : List<GameRecord>) 
 }
 
 @Composable
-fun GamesList_land(modifier: Modifier = Modifier, gamesList : List<GameRecord>) {
+fun GamesList_land(modifier: Modifier = Modifier, viewModel : GameViewModel) {
+    val gamesList = viewModel.gamesList
     LazyColumn (
         modifier = Modifier
             .size(width = listSizeX_port, height = listSizeY_port)
             .border(width = 1.dp, color = MaterialTheme.colorScheme.outline, shape = RoundedCornerShape(8.dp))
     )
     {
-        items(gamesList.size) { s ->
-            /*GamesListItem(
-                //pressedCount = countSequence(gamesList[s]).toString(),
-               // pressedSeq = shortenSequence(s = gamesList[s])
-            )*/
+        items(gamesList.size) { i ->
+            GamesListItem(
+                pressedCount = gamesList[i].errorIndex.toString(),
+                pressedSeq = styleStringFromLength(gamesList[i].errorIndex + 1, shortenSequence(s= gamesList[i].sequence))
+            )
         }
     }
 }

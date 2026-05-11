@@ -6,7 +6,7 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
 
 @Composable
-fun DetailUI(modifier: Modifier = Modifier, navController: NavController) {
+fun DetailUI(modifier: Modifier = Modifier, navController: NavController, data : String) {
     BackHandler() {
         navController.popBackStack()
     }

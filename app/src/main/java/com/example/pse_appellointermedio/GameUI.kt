@@ -1,6 +1,7 @@
 package com.example.pse_appellointermedio
 
 import android.content.res.Configuration
+import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -54,13 +55,23 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @Composable
-fun MainUI(modifier: Modifier = Modifier, navController: NavController) {
-    BackHandler() {
-        navController.popBackStack()
+fun MainUI(modifier: Modifier = Modifier, navController: NavController, viewModel: GameViewModel) {
+
+    fun addGame(i: Int, s : String) {
+        //If it's showing the first sequence, don't add the entry
+        if(!(viewModel.isShowingSequence && viewModel.sequenceLength <= 1)) {
+            viewModel.addGame(i, s)
+        }
     }
 
-    //ViewModel that holds states, sequences and coroutines
-    val viewModel : GameViewModel = viewModel()
+    //Handles both kinds of input: system button and gesture
+    BackHandler() {
+        //Back can be called after an error or while inputting sequence, so the two cases must be distinguished
+        val length = if(viewModel.errorState) viewModel.inputLength - 1 else viewModel.inputLength
+        addGame(length, viewModel.proposedSequence)
+        navController.popBackStack()
+        viewModel.resetState()
+    }
 
     //Sound stuff
     val context = LocalContext.current
@@ -126,7 +137,7 @@ fun MainUI(modifier: Modifier = Modifier, navController: NavController) {
                     viewModel.isShowingSequence,
                     viewModel.hasStartedGame,
                     navController,
-                    onAddGame = {}
+                    onAddGame = { addGame(viewModel.inputLength, viewModel.proposedSequence) }
                 )
             }
         }
@@ -176,11 +187,7 @@ fun MainUI(modifier: Modifier = Modifier, navController: NavController) {
                 viewModel.isShowingSequence,
                 viewModel.hasStartedGame,
                 navController,
-                onAddGame = {
-                    if(!(viewModel.isShowingSequence && viewModel.sequenceLength == 1)) {
-                        viewModel.addGame()
-                    }
-                }
+                onAddGame = { addGame(viewModel.inputLength, viewModel.proposedSequence) }
             )
         }
     }
@@ -519,7 +526,7 @@ fun StartButton_land(modifier: Modifier = Modifier, playState : Boolean, startGa
 }
 
 @Composable
-fun ActionButtons_port(modifier: Modifier = Modifier, seqS : String, pauseGame: () -> Unit, errorState : Boolean, pauseState : Boolean, showingState : Boolean, playState : Boolean, navController: NavController, onAddGame: (String) -> Unit) {
+fun ActionButtons_port(modifier: Modifier = Modifier, seqS : String, pauseGame: () -> Unit, errorState : Boolean, pauseState : Boolean, showingState : Boolean, playState : Boolean, navController: NavController, onAddGame: () -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -539,7 +546,7 @@ fun ActionButtons_port(modifier: Modifier = Modifier, seqS : String, pauseGame: 
 
         Button(
             onClick = {
-                onAddGame(seqS)
+                onAddGame()
                 navController.navigate("gamesList")
             },
             colors = ButtonDefaults.buttonColors(containerColor = fineBtn),
@@ -554,7 +561,7 @@ fun ActionButtons_port(modifier: Modifier = Modifier, seqS : String, pauseGame: 
 }
 
 @Composable
-fun ActionButtons_land(modifier: Modifier = Modifier, seqS : String, pauseGame: () -> Unit, errorState : Boolean, pauseState : Boolean, showingState : Boolean, playState : Boolean, navController: NavController,  onAddGame: (String) -> Unit) {
+fun ActionButtons_land(modifier: Modifier = Modifier, seqS : String, pauseGame: () -> Unit, errorState : Boolean, pauseState : Boolean, showingState : Boolean, playState : Boolean, navController: NavController,  onAddGame: () -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -563,7 +570,7 @@ fun ActionButtons_land(modifier: Modifier = Modifier, seqS : String, pauseGame: 
     ) {
         Button(
             onClick = {
-                onAddGame(seqS)
+                onAddGame()
                 navController.navigate("gamesList")
             },
             colors = ButtonDefaults.buttonColors(containerColor = fineBtn),
