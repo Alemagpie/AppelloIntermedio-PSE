@@ -27,9 +27,9 @@ fun NavGraph(modifier: Modifier = Modifier) {
             viewModel.resetState()
             MainUI(navController = navController, viewModel = viewModel)
         }
-        composable("detail/{game}") { backStackEntry ->
-            val game = backStackEntry.arguments?.getString("game")
-            DetailUI(navController = navController, data="")
+        composable("detail/{ID}") { backStackEntry ->
+            val id = backStackEntry.arguments?.getLong("ID")
+            DetailUI(navController = navController, viewModel = viewModel, recordID = id)
         }
     }
 }

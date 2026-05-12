@@ -49,6 +49,10 @@ val listSizeY_port = 300.dp
 val listItemPadding = 15.dp
 val langIconSize = 40.dp
 val langIconPadding = 20.dp
+val detailCountTopPadding_port = 30.dp
+val detailCountTopPadding_land = 20.dp
+val detailSeqTopPadding_port = 40.dp
+val detailSeqTopPadding_land = 30.dp
 
 
 //-----------------------------------------------

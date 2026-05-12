@@ -6,6 +6,7 @@ import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import android.provider.BaseColumns
 import android.util.Log
+import androidx.core.database.getIntOrNull
 
 //Wrapper for a SQLite db
 class DataManager(context: Context) : SQLiteOpenHelper(context, DB_NAME, null, DB_VERSION) {
@@ -21,8 +22,9 @@ class DataManager(context: Context) : SQLiteOpenHelper(context, DB_NAME, null, D
                 " integer primary key autoincrement, " + INPUT_COUNT + " int not null, " +
                 SEQUENCE + " text not null);"
 
-        const val SQL_SELECT_GAMES = "SELECT $INPUT_COUNT, $SEQUENCE FROM $TABLE_NAME"
-        const val SQL_SELECT_LATEST_GAME = "SELECT $INPUT_COUNT, $SEQUENCE FROM $TABLE_NAME ORDER BY ${BaseColumns._ID} DESC LIMIT 1"
+        const val SQL_SELECT_GAMES = "SELECT ${BaseColumns._ID}, $INPUT_COUNT, $SEQUENCE FROM $TABLE_NAME"
+        const val SQL_SELECT_LATEST_GAME = "SELECT ${BaseColumns._ID}, $INPUT_COUNT, $SEQUENCE FROM $TABLE_NAME ORDER BY ${BaseColumns._ID} DESC LIMIT 1"
+        const val SQL_GET_RECORD_FROM_ID = "SELECT ${BaseColumns._ID}, $INPUT_COUNT, $SEQUENCE FROM $TABLE_NAME WHERE ${BaseColumns._ID} = "
     }
 
 
@@ -64,6 +66,7 @@ class DataManager(context: Context) : SQLiteOpenHelper(context, DB_NAME, null, D
         while(cursor.moveToNext()) {
             games.add(
                 GameRecord(
+                    id = cursor.getLong(cursor.getColumnIndexOrThrow(BaseColumns._ID)),
                     errorIndex = cursor.getInt(cursor.getColumnIndexOrThrow(INPUT_COUNT)),
                     sequence = cursor.getString(cursor.getColumnIndexOrThrow(SEQUENCE))
                 )
@@ -85,6 +88,27 @@ class DataManager(context: Context) : SQLiteOpenHelper(context, DB_NAME, null, D
         //Get first record if exists, otherwise null
         val game = if(cursor.moveToFirst()) {
             GameRecord(
+                id = cursor.getLong(cursor.getColumnIndexOrThrow(BaseColumns._ID)),
+                errorIndex = cursor.getInt(cursor.getColumnIndexOrThrow(INPUT_COUNT)),
+                sequence = cursor.getString(cursor.getColumnIndexOrThrow(SEQUENCE))
+            )
+        } else null
+
+        cursor.close()
+        return game
+    }
+
+    fun getRecordFromId(id : Long?) : GameRecord? {
+        if(id == null) return null
+
+        val cursor = readableDatabase.rawQuery(
+            SQL_GET_RECORD_FROM_ID + id.toString(),
+            null
+        )
+
+        val game = if(cursor.moveToFirst()) {
+            GameRecord(
+                id,
                 errorIndex = cursor.getInt(cursor.getColumnIndexOrThrow(INPUT_COUNT)),
                 sequence = cursor.getString(cursor.getColumnIndexOrThrow(SEQUENCE))
             )

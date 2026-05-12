@@ -54,6 +54,7 @@ fun ListUI(modifier: Modifier = Modifier, navController: NavController, viewMode
         ) {
             GamesList_land(
                 Modifier,
+                navController,
                 viewModel
             )
 
@@ -77,6 +78,7 @@ fun ListUI(modifier: Modifier = Modifier, navController: NavController, viewMode
             ) {
                 GamesList_port(
                     Modifier,
+                    navController,
                     viewModel
                 )
             }
@@ -96,7 +98,7 @@ fun ListUI(modifier: Modifier = Modifier, navController: NavController, viewMode
 }
 
 @Composable
-fun GamesList_port(modifier: Modifier = Modifier, viewModel : GameViewModel) {
+fun GamesList_port(modifier: Modifier = Modifier, navController: NavController, viewModel : GameViewModel) {
     val gamesList = viewModel.gamesList
     LazyColumn (
         modifier = Modifier
@@ -106,15 +108,15 @@ fun GamesList_port(modifier: Modifier = Modifier, viewModel : GameViewModel) {
     {
         items(gamesList.size) { i ->
             GamesListItem(
-                pressedCount = gamesList[i].errorIndex.toString(),
-                pressedSeq = styleStringFromLength(gamesList[i].errorIndex + 1, shortenSequence(s= gamesList[i].sequence))
+                navController = navController,
+                record = gamesList[i]
             )
         }
     }
 }
 
 @Composable
-fun GamesList_land(modifier: Modifier = Modifier, viewModel : GameViewModel) {
+fun GamesList_land(modifier: Modifier = Modifier,navController: NavController, viewModel : GameViewModel) {
     val gamesList = viewModel.gamesList
     LazyColumn (
         modifier = Modifier
@@ -124,18 +126,25 @@ fun GamesList_land(modifier: Modifier = Modifier, viewModel : GameViewModel) {
     {
         items(gamesList.size) { i ->
             GamesListItem(
-                pressedCount = gamesList[i].errorIndex.toString(),
-                pressedSeq = styleStringFromLength(gamesList[i].errorIndex + 1, shortenSequence(s= gamesList[i].sequence))
+                navController = navController,
+                record = gamesList[i]
             )
         }
     }
 }
 
 @Composable
-fun GamesListItem(modifier: Modifier = Modifier, pressedCount : String, pressedSeq : AnnotatedString) {
+fun GamesListItem(modifier: Modifier = Modifier,navController: NavController, record : GameRecord) {
+    val pressedCount = record.errorIndex.toString()
+    val pressedSeq = styleStringFromLength(record.errorIndex + 1, shortenSequence(s= record.sequence))
     Row(
         modifier = Modifier
             .fillMaxWidth()
+            .clickable(
+                onClick = {
+                    navController.navigate("detail/${record.id}")
+                }
+            )
     ) {
         Text (
             modifier = Modifier
@@ -146,10 +155,7 @@ fun GamesListItem(modifier: Modifier = Modifier, pressedCount : String, pressedS
 
         Text(
             modifier = Modifier
-                .padding(listItemPadding)
-                .clickable(onClick = {
-                    //navController.navigate(pressedCount + "_" + pressedSeq)
-                }),
+                .padding(listItemPadding),
             text = pressedSeq
         )
     }

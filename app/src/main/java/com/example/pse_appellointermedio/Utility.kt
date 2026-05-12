@@ -7,6 +7,7 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.withStyle
 import com.example.pse_appellointermedio.ui.theme.errorColor
 import kotlin.random.Random
+import android.util.Log
 
 //Takes in a string and a color index, returns string with new color added
 fun appendColorToSequence(index: Int, s: String): String {
@@ -80,9 +81,15 @@ fun styleStringFromLength(index : Int, input : String) : AnnotatedString {
         if(index < 1 || index > countSequence(input)) {
             append(input)
         } else {
-            val i = 3 * (index - 1)
+            val i = (3 * (index - 1)).coerceAtMost(input.length)
             append(input.substring(0, i))
-            withStyle(style = SpanStyle(color = errorColor)) {
+
+            //Prevents single dots being colored (ex. error on 6th color, but the sequence gets shortened so it displays two black dots and a red one instead of three black ones)
+            if(i < input.length && input.substring(i, i+1) != ".") {
+                withStyle(style = SpanStyle(color = errorColor)) {
+                    append(input.substring(i))
+                }
+            } else {
                 append(input.substring(i))
             }
         }
