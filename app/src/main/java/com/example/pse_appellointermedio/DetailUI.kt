@@ -1,6 +1,7 @@
 package com.example.pse_appellointermedio
 
 import android.content.res.Configuration
+import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -23,31 +24,31 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 
-@Composable
-fun DetailUI(modifier: Modifier = Modifier, navController: NavController, viewModel: GameViewModel, recordID: Long?) {
-    BackHandler {
-        navController.popBackStack()
+    @Composable
+    fun DetailUI(modifier: Modifier = Modifier, navController: NavController, viewModel: GameViewModel, recordID: Long?) {
+        BackHandler {
+            navController.popBackStack()
+        }
+
+        val record = viewModel.dm.getRecordFromId(recordID) ?: return
+
+        val configuration = LocalConfiguration.current
+        val countPadding: Dp
+        val seqPadding: Dp
+
+        if (configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            countPadding = detailCountTopPadding_land
+            seqPadding = detailSeqTopPadding_land
+        } else {
+            countPadding = detailCountTopPadding_port
+            seqPadding = detailSeqTopPadding_port
+        }
+
+        Column(modifier = Modifier.fillMaxSize()) {
+            CountText(count = record.errorIndex, topPadding = countPadding)
+            SeqText(seq = styleStringFromLength(record.errorIndex + 1, record.sequence), topPadding = seqPadding)
+        }
     }
-
-    val record = viewModel.dm.getRecordFromId(recordID) ?: return
-
-    val configuration = LocalConfiguration.current
-    val countPadding: Dp
-    val seqPadding: Dp
-
-    if (configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-        countPadding = detailCountTopPadding_land
-        seqPadding = detailSeqTopPadding_land
-    } else {
-        countPadding = detailCountTopPadding_port
-        seqPadding = detailSeqTopPadding_port
-    }
-
-    Column(modifier = Modifier.fillMaxSize()) {
-        CountText(count = record.errorIndex, topPadding = countPadding)
-        SeqText(seq = styleStringFromLength(record.errorIndex + 1, record.sequence), topPadding = seqPadding)
-    }
-}
 
 @Composable
 fun CountText(modifier: Modifier = Modifier, count: Int, topPadding: Dp) {
