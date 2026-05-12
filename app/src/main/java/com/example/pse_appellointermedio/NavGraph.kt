@@ -24,7 +24,6 @@ fun NavGraph(modifier: Modifier = Modifier) {
             ListUI(navController = navController, viewModel = viewModel)
         }
         composable("colorGrid") {
-            viewModel.resetState()
             MainUI(navController = navController, viewModel = viewModel)
         }
         composable("detail/{ID}") { backStackEntry ->

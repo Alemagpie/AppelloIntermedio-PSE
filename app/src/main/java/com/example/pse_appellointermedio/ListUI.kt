@@ -60,7 +60,8 @@ fun ListUI(modifier: Modifier = Modifier, navController: NavController, viewMode
 
             StartButton_land(
                 Modifier,
-                navController
+                navController,
+                viewModel
             )
         }
 
@@ -89,7 +90,8 @@ fun ListUI(modifier: Modifier = Modifier, navController: NavController, viewMode
             ) {
                 StartButton_port(
                     Modifier,
-                    navController
+                    navController,
+                    viewModel
                 )
             }
         }
@@ -162,7 +164,7 @@ fun GamesListItem(modifier: Modifier = Modifier,navController: NavController, re
 }
 
 @Composable
-fun StartButton_port(modifier: Modifier = Modifier, navController: NavController) {
+fun StartButton_port(modifier: Modifier = Modifier, navController: NavController, viewModel : GameViewModel) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -170,7 +172,10 @@ fun StartButton_port(modifier: Modifier = Modifier, navController: NavController
         horizontalArrangement = Arrangement.SpaceEvenly
     ) {
         Button(
-            onClick = { navController.navigate("colorGrid") },
+            onClick = {
+                viewModel.resetState()
+                navController.navigate("colorGrid")
+            },
             colors = ButtonDefaults.buttonColors(containerColor = startGameBtn),
             modifier = Modifier.size(
                 width = startGameButtonWidth_port,
@@ -184,9 +189,12 @@ fun StartButton_port(modifier: Modifier = Modifier, navController: NavController
 }
 
 @Composable
-fun StartButton_land(modifier: Modifier = Modifier, navController: NavController) {
+fun StartButton_land(modifier: Modifier = Modifier, navController: NavController, viewModel : GameViewModel) {
     Button(
-        onClick = { navController.navigate("colorGrid") },
+        onClick = {
+            viewModel.resetState()
+            navController.navigate("colorGrid")
+        },
         colors = ButtonDefaults.buttonColors(containerColor = startGameBtn),
         modifier = Modifier.size(
             width = startGameButtonWidth_land,
