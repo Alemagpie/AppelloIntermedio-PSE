@@ -12,6 +12,7 @@ import androidx.compose.runtime.neverEqualPolicy
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.SavedStateHandle
+import kotlin.text.get
 
 //ViewModel used to hold sequences, states and coroutines
 //Used to make coroutines survive recomposition
@@ -38,7 +39,31 @@ class GameViewModel(application : Application, private val savedStateHandle: Sav
     //Record list (to make the db entries be observable by Compose)
     var gamesList by mutableStateOf(dm.getGames(), policy = neverEqualPolicy())
 
-    //
+    //Save state to recover activity when android kills the app to free resources
+    var userClosed : Boolean
+        get() = savedStateHandle.get<Boolean>("userClosed") ?: false
+        set(value) { savedStateHandle["userClosed"] = value }
+    var seqString_save : String
+        get() = savedStateHandle.get<String>("seqString_save") ?: ""
+        set(value) { savedStateHandle["seqString_save"] = value }
+    var propString_save : String
+        get() = savedStateHandle.get<String>("propString_save") ?: ""
+        set(value) { savedStateHandle["propString_save"] = value }
+    var seqLength_save : Int
+        get() = savedStateHandle.get<Int>("seqLenght_save") ?: 0
+        set(value) { savedStateHandle["seqLength_save"] = value }
+    var inputLength_save : Int
+        get() = savedStateHandle.get<Int>("inputLenght_save") ?: 0
+        set(value) { savedStateHandle["inputLength_save"] = value }
+    var showSeq_save : Boolean
+        get() = savedStateHandle.get<Boolean>("showSeq_save") ?: false
+        set(value) { savedStateHandle["showSeq_save"] = value }
+    var startGame_save : Boolean
+        get() = savedStateHandle.get<Boolean>("startGame_save") ?: false
+        set(value) { savedStateHandle["startGame_save"] = value }
+    var errorState_save : Boolean
+        get() = savedStateHandle.get<Boolean>("errorState_save") ?: false
+        set(value) { savedStateHandle["errorState_save"] = value }
 
     //Starts coroutine for adding a color to the generated sequence and showing it all
     fun startSequence(playColorAudio : (Int) -> Unit) {
@@ -111,6 +136,43 @@ class GameViewModel(application : Application, private val savedStateHandle: Sav
         hasStartedGame = false
         hIndex = null
         errorState = false
+    }
+
+    fun shouldRecover() : Boolean {
+        return ((savedStateHandle.get<Boolean>("startGame_save") ?: false) == true && (savedStateHandle.get<Boolean>("userClosed") ?: true) != true)
+    }
+
+    fun setRecoveryState() {
+        savedStateHandle["userClosed"] = false
+        savedStateHandle["seqString_save"] = sequenceString
+        savedStateHandle["propString_save"] = proposedSequence
+        savedStateHandle["seqLength_save"] = sequenceLength
+        savedStateHandle["inputLength_save"] = inputLength
+        savedStateHandle["showSeq_save"] = isShowingSequence
+        savedStateHandle["startGame_save"] = hasStartedGame
+        savedStateHandle["errorState_save"] = errorState
+    }
+
+    fun loadRecoveryState() {
+        savedStateHandle["userClosed"] = true
+        sequenceString = savedStateHandle.get<String>("seqString_save") ?: ""
+        proposedSequence = savedStateHandle.get<String>("propString_save") ?: ""
+        sequenceLength = savedStateHandle.get<Int>("seqLength_save") ?: 0
+        inputLength = savedStateHandle.get<Int>("inputLength_save") ?: 0
+        isShowingSequence = savedStateHandle.get<Boolean>("showSeq_save") ?: false
+        hasStartedGame = savedStateHandle.get<Boolean>("startGame_save") ?: false
+        errorState = savedStateHandle.get<Boolean>("errorState_save") ?: false
+    }
+
+    fun resetRecoveryState() {
+        savedStateHandle["userClosed"] = true
+        savedStateHandle["seqString_save"] = ""
+        savedStateHandle["propString_save"] = ""
+        savedStateHandle["seqLength_save"] = 0
+        savedStateHandle["inputLength_save"] = 0
+        savedStateHandle["showSeq_save"] = false
+        savedStateHandle["startGame_save"] = false
+        savedStateHandle["errorState_save"] = false
     }
 
 }

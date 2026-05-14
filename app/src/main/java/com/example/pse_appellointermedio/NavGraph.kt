@@ -1,6 +1,7 @@
 package com.example.pse_appellointermedio
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
@@ -11,6 +12,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.lifecycle.SavedStateHandle
 
 @Composable
 fun NavGraph(modifier: Modifier = Modifier) {
@@ -18,6 +20,14 @@ fun NavGraph(modifier: Modifier = Modifier) {
     //ViewModel that holds states, sequences and coroutines
     //It had to be moved here instead of getting it from the various UI functions because they would get different instances and cause sync problems
     val viewModel: GameViewModel = viewModel()
+
+    //Launches a coroutine that isn't UI related
+    LaunchedEffect(Unit) {
+        if (viewModel.shouldRecover()) {
+            viewModel.loadRecoveryState()
+            navController.navigate("colorGrid")
+        }
+    }
 
     NavHost(navController = navController, startDestination = "gamesList") {
         composable("gamesList") {

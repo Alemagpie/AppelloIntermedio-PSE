@@ -10,6 +10,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.ViewModelProvider
 import com.example.pse_appellointermedio.ui.theme.PSEAppelloIntermedioTheme
 
 
@@ -77,8 +78,14 @@ class MainActivity : ComponentActivity() {
     override fun onStop() {
         super.onStop()
 
+        val viewModel = ViewModelProvider(this)[GameViewModel::class.java]
+
         if(isFinishing) {
             //User killed the activity, so clear the saved states
+            viewModel.resetRecoveryState()
+        } else {
+            //Android is killing the activity, save variables and setup for recovery on reopening
+            viewModel.setRecoveryState()
         }
     }
 }

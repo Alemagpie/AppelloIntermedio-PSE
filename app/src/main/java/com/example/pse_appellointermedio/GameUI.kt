@@ -57,7 +57,9 @@ fun MainUI(modifier: Modifier = Modifier, navController: NavController, viewMode
         //Back can be called after an error or while inputting sequence, so the two cases must be distinguished
         val length = if(viewModel.errorState) viewModel.inputLength - 1 else viewModel.inputLength
         addGame(length, viewModel.proposedSequence)
-        navController.popBackStack()
+        navController.navigate("gamesList") {
+            popUpTo("gamesList") { inclusive = false }
+        }
     }
 
     //Sound stuff
@@ -534,7 +536,9 @@ fun ActionButtons_port(modifier: Modifier = Modifier, seqS : String, pauseGame: 
         Button(
             onClick = {
                 onAddGame()
-                navController.navigate("gamesList")
+                navController.navigate("gamesList") {
+                    popUpTo("gamesList") { inclusive = false }
+                }
             },
             colors = ButtonDefaults.buttonColors(containerColor = fineBtn),
             modifier = Modifier
@@ -558,7 +562,9 @@ fun ActionButtons_land(modifier: Modifier = Modifier, seqS : String, pauseGame: 
         Button(
             onClick = {
                 onAddGame()
-                navController.navigate("gamesList")
+                navController.navigate("gamesList") {
+                    popUpTo("gamesList") { inclusive = false }
+                }
             },
             colors = ButtonDefaults.buttonColors(containerColor = fineBtn),
             modifier = Modifier
