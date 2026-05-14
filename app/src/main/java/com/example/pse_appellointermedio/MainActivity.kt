@@ -13,7 +13,8 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.ViewModelProvider
 import com.example.pse_appellointermedio.ui.theme.PSEAppelloIntermedioTheme
 
-
+//UI styling values
+//I decided to leave them here for ease of access and to avoid scattering them all over
 val titleFontSize = 20.sp
 val mainTopPadding_port = 70.dp
 val titleTopPadding_land = 35.dp
@@ -80,6 +81,7 @@ class MainActivity : ComponentActivity() {
 
         val viewModel = ViewModelProvider(this)[GameViewModel::class.java]
 
+        //isFinishing is true if the activity was killed as a result of the user's actions
         if(isFinishing) {
             //User killed the activity, so clear the saved states
             viewModel.resetRecoveryState()

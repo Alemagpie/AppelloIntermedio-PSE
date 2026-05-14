@@ -1,7 +1,6 @@
 package com.example.pse_appellointermedio
 
 import android.media.SoundPool
-import android.media.AudioManager
 import android.media.AudioAttributes
 
 class SoundPlayer(context: android.content.Context) {
@@ -15,6 +14,7 @@ class SoundPlayer(context: android.content.Context) {
         )
         .build()
 
+    //Preloads the sound clips
     private val soundIds = listOf(
         sp.load(context, R.raw.sound_r, 1),
         sp.load(context, R.raw.sound_g, 1),

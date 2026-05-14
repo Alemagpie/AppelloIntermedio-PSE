@@ -12,7 +12,6 @@ import androidx.compose.runtime.neverEqualPolicy
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.SavedStateHandle
-import kotlin.text.get
 
 //ViewModel used to hold sequences, states and coroutines
 //Used to make coroutines survive recomposition
@@ -40,6 +39,8 @@ class GameViewModel(application : Application, private val savedStateHandle: Sav
     var gamesList by mutableStateOf(dm.getGames(), policy = neverEqualPolicy())
 
     //Save state to recover activity when android kills the app to free resources
+    //I decided to use savedStateHandle instead of sharedPreferences since
+    //it's slightly easier to use and is meant for temporary state saving
     var userClosed : Boolean
         get() = savedStateHandle.get<Boolean>("userClosed") ?: false
         set(value) { savedStateHandle["userClosed"] = value }
@@ -119,6 +120,7 @@ class GameViewModel(application : Application, private val savedStateHandle: Sav
         }
     }
 
+    //Adds record to the db and refreshes the compose observed record list
     fun addGame(errorIndex : Int, sequence : String) {
         dm.addGame(if(errorIndex>0) errorIndex else 0, sequence)
         gamesList = dm.getGames()
@@ -126,6 +128,7 @@ class GameViewModel(application : Application, private val savedStateHandle: Sav
         resetState()
     }
 
+    //State gets reset
     fun resetState() {
         inputLength = 0
         sequenceLength = 0
@@ -138,41 +141,43 @@ class GameViewModel(application : Application, private val savedStateHandle: Sav
         errorState = false
     }
 
+    //Indicates whether the app was left in a state to be recovered or not when it was closed
     fun shouldRecover() : Boolean {
-        return ((savedStateHandle.get<Boolean>("startGame_save") ?: false) == true && (savedStateHandle.get<Boolean>("userClosed") ?: true) != true)
+        return startGame_save && !userClosed
     }
 
+    //Saves state to recover
     fun setRecoveryState() {
-        savedStateHandle["userClosed"] = false
-        savedStateHandle["seqString_save"] = sequenceString
-        savedStateHandle["propString_save"] = proposedSequence
-        savedStateHandle["seqLength_save"] = sequenceLength
-        savedStateHandle["inputLength_save"] = inputLength
-        savedStateHandle["showSeq_save"] = isShowingSequence
-        savedStateHandle["startGame_save"] = hasStartedGame
-        savedStateHandle["errorState_save"] = errorState
+        seqString_save = sequenceString
+        propString_save = proposedSequence
+        seqLength_save = sequenceLength
+        inputLength_save = inputLength
+        showSeq_save = isShowingSequence
+        startGame_save = hasStartedGame
+        errorState_save = errorState
     }
 
+    //Sets back the app's state from the save
     fun loadRecoveryState() {
-        savedStateHandle["userClosed"] = true
-        sequenceString = savedStateHandle.get<String>("seqString_save") ?: ""
-        proposedSequence = savedStateHandle.get<String>("propString_save") ?: ""
-        sequenceLength = savedStateHandle.get<Int>("seqLength_save") ?: 0
-        inputLength = savedStateHandle.get<Int>("inputLength_save") ?: 0
-        isShowingSequence = savedStateHandle.get<Boolean>("showSeq_save") ?: false
-        hasStartedGame = savedStateHandle.get<Boolean>("startGame_save") ?: false
-        errorState = savedStateHandle.get<Boolean>("errorState_save") ?: false
+        userClosed = false
+        sequenceString = seqString_save
+        proposedSequence = propString_save
+        sequenceLength = seqLength_save
+        inputLength = inputLength_save
+        isShowingSequence = showSeq_save
+        hasStartedGame = startGame_save
+        errorState = errorState_save
     }
 
+    //Resets the save
     fun resetRecoveryState() {
-        savedStateHandle["userClosed"] = true
-        savedStateHandle["seqString_save"] = ""
-        savedStateHandle["propString_save"] = ""
-        savedStateHandle["seqLength_save"] = 0
-        savedStateHandle["inputLength_save"] = 0
-        savedStateHandle["showSeq_save"] = false
-        savedStateHandle["startGame_save"] = false
-        savedStateHandle["errorState_save"] = false
+        userClosed = false
+        seqString_save = ""
+        propString_save = ""
+        seqLength_save = 0
+        inputLength_save = 0
+        showSeq_save = false
+        startGame_save = false
+        errorState_save = false
     }
-
 }

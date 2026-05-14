@@ -71,11 +71,12 @@ fun MainUI(modifier: Modifier = Modifier, navController: NavController, viewMode
         }
     }
 
+    //Error panel is drawn behind everything else regardless of the orientation
+    ErrorPanel(errorState= viewModel.errorState)
+
     //Two UIs for both configurations
     val configuration = LocalConfiguration.current
     if(configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-        ErrorPanel(errorState= viewModel.errorState)
-
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -131,8 +132,6 @@ fun MainUI(modifier: Modifier = Modifier, navController: NavController, viewMode
             }
         }
     } else {
-        ErrorPanel(errorState= viewModel.errorState)
-
         Column(
             modifier = Modifier
                 .fillMaxSize()

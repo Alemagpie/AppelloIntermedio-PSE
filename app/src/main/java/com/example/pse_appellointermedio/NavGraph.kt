@@ -2,17 +2,11 @@ package com.example.pse_appellointermedio
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import androidx.lifecycle.SavedStateHandle
 
 @Composable
 fun NavGraph(modifier: Modifier = Modifier) {
@@ -22,6 +16,7 @@ fun NavGraph(modifier: Modifier = Modifier) {
     val viewModel: GameViewModel = viewModel()
 
     //Launches a coroutine that isn't UI related
+    //Loads back up the recovery save, if left in the state to do so
     LaunchedEffect(Unit) {
         if (viewModel.shouldRecover()) {
             viewModel.loadRecoveryState()

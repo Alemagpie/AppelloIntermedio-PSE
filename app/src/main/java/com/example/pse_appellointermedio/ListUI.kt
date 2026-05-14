@@ -32,14 +32,11 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.core.content.edit
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.pse_appellointermedio.ui.theme.startGameBtn
-import com.example.pse_appellointermedio.ui.theme.errorColor
 
 @Composable
 fun ListUI(modifier: Modifier = Modifier, navController: NavController, viewModel: GameViewModel) {

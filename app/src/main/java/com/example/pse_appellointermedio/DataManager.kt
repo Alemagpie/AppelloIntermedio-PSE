@@ -6,7 +6,6 @@ import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import android.provider.BaseColumns
 import android.util.Log
-import androidx.core.database.getIntOrNull
 
 //Wrapper for a SQLite db
 class DataManager(context: Context) : SQLiteOpenHelper(context, DB_NAME, null, DB_VERSION) {
@@ -35,7 +34,7 @@ class DataManager(context: Context) : SQLiteOpenHelper(context, DB_NAME, null, D
 
     override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int)
     {
-        //No upgrades
+        //No upgrades, still needed to inherit from SQLiteOpenHelper
     }
 
     //Adds index at which the error was made and the sequence to the db
@@ -98,6 +97,7 @@ class DataManager(context: Context) : SQLiteOpenHelper(context, DB_NAME, null, D
         return game
     }
 
+    //Returns a record with a matching id, otherwise null
     fun getRecordFromId(id : Long?) : GameRecord? {
         if(id == null) return null
 
