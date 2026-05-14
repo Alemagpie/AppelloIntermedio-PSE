@@ -73,4 +73,12 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
+
+    override fun onStop() {
+        super.onStop()
+
+        if(isFinishing) {
+            //User killed the activity, so clear the saved states
+        }
+    }
 }
