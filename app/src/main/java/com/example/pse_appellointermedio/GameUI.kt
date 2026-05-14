@@ -18,6 +18,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -44,7 +45,6 @@ import com.example.pse_appellointermedio.ui.theme.startBtn
 
 @Composable
 fun MainUI(modifier: Modifier = Modifier, navController: NavController, viewModel: GameViewModel) {
-
     fun addGame(i: Int, s : String) {
         //If it's showing the first sequence, don't add the entry
         if(!(viewModel.isShowingSequence && viewModel.sequenceLength <= 1)) {
@@ -68,6 +68,14 @@ fun MainUI(modifier: Modifier = Modifier, navController: NavController, viewMode
     val playColorAudio : (Int) -> Unit = {index ->
         if(index in 0 .. 6) {
             soundPlayer.playSound(index)
+        }
+    }
+
+    // Restarts the coroutine if the game was left while the app was showing the sequence
+    LaunchedEffect(Unit) {
+        if (viewModel.isShowingSequence && viewModel.shouldRecover() && !viewModel.hasRestarted) {
+            viewModel.hasRestarted = true
+            viewModel.readSequence(playColorAudio)
         }
     }
 

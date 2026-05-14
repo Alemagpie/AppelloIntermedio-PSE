@@ -26,6 +26,8 @@ class GameViewModel(application : Application, private val savedStateHandle: Sav
     var inputLength by mutableIntStateOf(0)
 
     //States
+    //Only true if the app was killed by the
+    var hasRestarted by mutableStateOf(false)
     var isPaused by mutableStateOf(false)
     //Acts as a mutex for receiving user input
     var isShowingSequence by mutableStateOf(false)
@@ -51,7 +53,7 @@ class GameViewModel(application : Application, private val savedStateHandle: Sav
         get() = savedStateHandle.get<String>("propString_save") ?: ""
         set(value) { savedStateHandle["propString_save"] = value }
     var seqLength_save : Int
-        get() = savedStateHandle.get<Int>("seqLenght_save") ?: 0
+        get() = savedStateHandle.get<Int>("seqLength_save") ?: 0
         set(value) { savedStateHandle["seqLength_save"] = value }
     var inputLength_save : Int
         get() = savedStateHandle.get<Int>("inputLenght_save") ?: 0
@@ -62,6 +64,9 @@ class GameViewModel(application : Application, private val savedStateHandle: Sav
     var startGame_save : Boolean
         get() = savedStateHandle.get<Boolean>("startGame_save") ?: false
         set(value) { savedStateHandle["startGame_save"] = value }
+    var pauseState_save : Boolean
+        get() = savedStateHandle.get<Boolean>("savedState_save") ?: false
+        set(value) { savedStateHandle["savedState_save"] = value }
     var errorState_save : Boolean
         get() = savedStateHandle.get<Boolean>("errorState_save") ?: false
         set(value) { savedStateHandle["errorState_save"] = value }
@@ -80,10 +85,31 @@ class GameViewModel(application : Application, private val savedStateHandle: Sav
             val s = proposedSequence.replace(", ", "")
             sequenceLength++
 
+
             for (c in s) {
                 //Stalls the coroutine (without blocking the thread) if game is paused
                 waitIfPaused()
                 //Sets color index to highlight
+                hIndex = getIndexFromColor(c)
+                playColorAudio(hIndex as Int)
+                delay(600)
+                hIndex = null
+                delay(100)
+            }
+            isShowingSequence = false
+        }
+    }
+
+    //Reads the generated sequence without adding any color
+    fun readSequence(playColorAudio : (Int) -> Unit) {
+        viewModelScope.launch {
+            inputLength = 0
+            sequenceString = ""
+
+            isShowingSequence = true
+            val s = proposedSequence.replace(", ", "")
+            for (c in s) {
+                waitIfPaused()
                 hIndex = getIndexFromColor(c)
                 playColorAudio(hIndex as Int)
                 delay(600)
@@ -102,10 +128,17 @@ class GameViewModel(application : Application, private val savedStateHandle: Sav
         }
     }
 
+    //Adds new color to the user's input sequence
     fun addAndCheckColor(i : Int, playColorAudio: (Int) -> Unit) {
         if(!isShowingSequence && proposedSequence.isNotEmpty() && !errorState) {
             sequenceString = appendColorToSequence(i, sequenceString)
             inputLength++
+
+            //Only here to prevent crashes if the input and the proposed sequences get out of sync
+            if (sequenceString.length > proposedSequence.length) {
+                errorState = true
+                return
+            }
 
             //If the partial string matches continue, otherwise go into error state
             if(sequenceString == proposedSequence.subSequence(0, sequenceString.length).toString()) {
@@ -135,6 +168,7 @@ class GameViewModel(application : Application, private val savedStateHandle: Sav
         sequenceString = ""
         proposedSequence = ""
 
+        hasRestarted = false
         isShowingSequence = false
         hasStartedGame = false
         hIndex = null
@@ -154,6 +188,7 @@ class GameViewModel(application : Application, private val savedStateHandle: Sav
         inputLength_save = inputLength
         showSeq_save = isShowingSequence
         startGame_save = hasStartedGame
+        pauseState_save = isPaused
         errorState_save = errorState
     }
 
@@ -166,7 +201,9 @@ class GameViewModel(application : Application, private val savedStateHandle: Sav
         inputLength = inputLength_save
         isShowingSequence = showSeq_save
         hasStartedGame = startGame_save
+        isPaused = pauseState_save
         errorState = errorState_save
+        Log.i("seq", "loadRecoveryState: sequenceLength=$sequenceLength seqLength_save=$seqLength_save")
     }
 
     //Resets the save
@@ -178,6 +215,7 @@ class GameViewModel(application : Application, private val savedStateHandle: Sav
         inputLength_save = 0
         showSeq_save = false
         startGame_save = false
+        pauseState_save = false
         errorState_save = false
     }
 }
