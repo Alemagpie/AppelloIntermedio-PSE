@@ -38,7 +38,7 @@ class GameViewModel(application : Application, private val savedStateHandle: Sav
     var errorState by mutableStateOf(false)
 
     //Sound stuff
-    val soundPlayer = SoundPlayer(application.applicationContext)
+    var soundPlayer = SoundPlayer(application.applicationContext)
     fun playColorAudio(index : Int) {
         if(index in 0 .. 6) {
             soundPlayer.playSound(index)
@@ -80,6 +80,9 @@ class GameViewModel(application : Application, private val savedStateHandle: Sav
     var errorState_save : Boolean
         get() = savedStateHandle.get<Boolean>("errorState_save") ?: false
         set(value) { savedStateHandle["errorState_save"] = value }
+    var hasRestarted_save: Boolean
+        get() = savedStateHandle.get<Boolean>("hasRestarted_save") ?: false
+        set(value) { savedStateHandle["hasRestarted_save"] = value }
 
     //Starts coroutine for adding a color to the generated sequence and showing it all
     private var job : Job? = null
@@ -209,6 +212,7 @@ class GameViewModel(application : Application, private val savedStateHandle: Sav
         startGame_save = hasStartedGame
         pauseState_save = isPaused
         errorState_save = errorState
+        hasRestarted_save = hasRestarted
     }
 
     //Sets back the app's state from the save
@@ -222,7 +226,7 @@ class GameViewModel(application : Application, private val savedStateHandle: Sav
         hasStartedGame = startGame_save
         isPaused = pauseState_save
         errorState = errorState_save
-        Log.i("seq", "loadRecoveryState: sequenceLength=$sequenceLength seqLength_save=$seqLength_save")
+        hasRestarted = hasRestarted_save
     }
 
     //Resets the save
@@ -236,6 +240,8 @@ class GameViewModel(application : Application, private val savedStateHandle: Sav
         startGame_save = false
         pauseState_save = false
         errorState_save = false
+        hasRestarted = false
+        hasRestarted_save = false
     }
 
     //Clean-up
