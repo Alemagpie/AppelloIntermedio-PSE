@@ -30,8 +30,6 @@ val seqTextTopPadding_port = 20.dp
 val seqTextTopPadding_land = 30.dp
 val seqTextHeight_port = 80.dp
 val seqTextHeight_land = 30.dp
-val startButtonTopPadding_port = 100.dp
-val startButtonTopPadding_land = 50.dp
 val actionButtonsWidth_port = 160.dp
 val actionButtonsWidth_land = 250.dp
 val actionButtonsHeight_port = 80.dp
@@ -51,10 +49,10 @@ val listSizeY_port = 300.dp
 val listItemPadding = 15.dp
 val langIconSize = 40.dp
 val langIconPadding = 20.dp
-val detailCountTopPadding_port = 240.dp
-val detailCountTopPadding_land = 90.dp
-val detailSeqTopPadding_port = 100.dp
-val detailSeqTopPadding_land = 50.dp
+val detailTopPadding_port = 240.dp
+val detailTopPadding_land = 90.dp
+val detailSidePadding_port = 30.dp
+val detailSidePadding_land = 50.dp
 
 
 //-----------------------------------------------
@@ -85,7 +83,8 @@ class MainActivity : ComponentActivity() {
         if(isFinishing) {
             //User killed the activity, so clear the saved states
             viewModel.resetRecoveryState()
-        } else {
+            //Extra check needed because otherwise the sequence would be read on top of the already existing coroutine
+        } else if (!isChangingConfigurations) {
             //Android is killing the activity, save variables and setup for recovery on reopening
             viewModel.setRecoveryState()
         }

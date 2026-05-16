@@ -19,13 +19,11 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -44,7 +42,7 @@ import com.example.pse_appellointermedio.ui.theme.fineBtn
 import com.example.pse_appellointermedio.ui.theme.startBtn
 
 @Composable
-fun MainUI(modifier: Modifier = Modifier, navController: NavController, viewModel: GameViewModel) {
+fun MainUI(navController: NavController, viewModel: GameViewModel) {
     fun addGame(i: Int, s : String) {
         //If it's showing the first sequence, don't add the entry
         if(!(viewModel.isShowingSequence && viewModel.sequenceLength <= 1)) {
@@ -53,7 +51,10 @@ fun MainUI(modifier: Modifier = Modifier, navController: NavController, viewMode
     }
 
     //Handles both kinds of input: system button and gesture
-    BackHandler() {
+    BackHandler {
+        //Cancel coroutine
+        viewModel.stopSequence()
+
         //Back can be called after an error or while inputting sequence, so the two cases must be distinguished
         val length = if(viewModel.errorState) viewModel.inputLength - 1 else viewModel.inputLength
         addGame(length, viewModel.proposedSequence)
@@ -62,20 +63,11 @@ fun MainUI(modifier: Modifier = Modifier, navController: NavController, viewMode
         }
     }
 
-    //Sound stuff
-    val context = LocalContext.current
-    val soundPlayer = remember{ SoundPlayer(context) }
-    val playColorAudio : (Int) -> Unit = {index ->
-        if(index in 0 .. 6) {
-            soundPlayer.playSound(index)
-        }
-    }
-
     // Restarts the coroutine if the game was left while the app was showing the sequence
     LaunchedEffect(Unit) {
         if (viewModel.isShowingSequence && viewModel.shouldRecover() && !viewModel.hasRestarted) {
             viewModel.hasRestarted = true
-            viewModel.readSequence(playColorAudio)
+            viewModel.readSequence()
         }
     }
 
@@ -90,7 +82,7 @@ fun MainUI(modifier: Modifier = Modifier, navController: NavController, viewMode
                 .fillMaxWidth()
                 .padding(top = titleTopPadding_land)
         ) {
-            Title_land()
+            Title()
         }
 
         Row(
@@ -98,37 +90,31 @@ fun MainUI(modifier: Modifier = Modifier, navController: NavController, viewMode
                 .fillMaxWidth()
                 .padding(top = contentTopPadding_land)
         ) {
-            Column() {
+            Column {
                 ColorGrid_land(
-                    Modifier,
-                    viewModel.sequenceString,
                     onButtonClick = { index ->
-                        viewModel.addAndCheckColor(index, playColorAudio)
-                        if(viewModel.hasStartedGame && !viewModel.isShowingSequence) playColorAudio(index)
+                        viewModel.addAndCheckColor(index)
+                        if(viewModel.hasStartedGame && !viewModel.isShowingSequence) viewModel.playColorAudio(index)
                     },
                     viewModel.hIndex
                 )
             }
 
-            Column() {
+            Column {
                 SequenceText_land(
-                    Modifier,
                     viewModel.sequenceString,
                     viewModel.hasStartedGame
                 )
 
                 StartButton_land(
-                    Modifier,
                     viewModel.hasStartedGame,
                     startGame = {
                         viewModel.hasStartedGame = true
-                        viewModel.startSequence(playColorAudio)
+                        viewModel.startSequence()
                     }
                 )
 
                 ActionButtons_land(
-                    Modifier,
-                    viewModel.sequenceString,
                     pauseGame = { viewModel.isPaused = !viewModel.isPaused },
                     viewModel.errorState,
                     viewModel.isPaused,
@@ -147,36 +133,30 @@ fun MainUI(modifier: Modifier = Modifier, navController: NavController, viewMode
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Top
         ) {
-            Title_port()
+            Title()
 
             ColorGrid_port(
-                Modifier,
-                viewModel.sequenceString,
                 onButtonClick = { index ->
-                    viewModel.addAndCheckColor(index, playColorAudio)
-                    if(viewModel.hasStartedGame && !viewModel.isShowingSequence) playColorAudio(index)
+                    viewModel.addAndCheckColor(index)
+                    if(viewModel.hasStartedGame && !viewModel.isShowingSequence) viewModel.playColorAudio(index)
                 },
                 viewModel.hIndex
             )
 
             SequenceText_port(
-                Modifier,
                 viewModel.sequenceString,
                 viewModel.hasStartedGame
             )
 
             StartButton_port(
-                Modifier,
                 viewModel.hasStartedGame,
                 startGame = {
                     viewModel.hasStartedGame = true
-                    viewModel.startSequence(playColorAudio)
+                    viewModel.startSequence()
                 }
             )
 
             ActionButtons_port(
-                Modifier,
-                viewModel.sequenceString,
                 pauseGame = { viewModel.isPaused = !viewModel.isPaused },
                 viewModel.errorState,
                 viewModel.isPaused,
@@ -193,7 +173,7 @@ fun MainUI(modifier: Modifier = Modifier, navController: NavController, viewMode
 }
 
 @Composable
-fun Title_port(modifier: Modifier = Modifier) {
+fun Title() {
     Row(
         modifier = Modifier
             .fillMaxWidth(),
@@ -210,24 +190,7 @@ fun Title_port(modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun Title_land(modifier: Modifier = Modifier) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth(),
-        horizontalArrangement = Arrangement.Center
-    ) {
-        Text(
-            text = stringResource(R.string.title),
-            style = TextStyle(
-                fontWeight = FontWeight.Bold,
-                fontSize = titleFontSize
-            )
-        )
-    }
-}
-
-@Composable
-fun ColorGrid_port(modifier: Modifier = Modifier, seqS : String, onButtonClick: (Int) -> Unit, highlightedIndex: Int? = null) {
+fun ColorGrid_port(onButtonClick: (Int) -> Unit, highlightedIndex: Int? = null) {
     val baseColors = listOf(boxR, boxG, boxB, boxM, boxY, boxC)
     val colors = baseColors.mapIndexed { index, color ->
         if (index == highlightedIndex) color.copy(alpha = 0.5f) else color
@@ -333,7 +296,7 @@ fun ColorGrid_port(modifier: Modifier = Modifier, seqS : String, onButtonClick: 
 }
 
 @Composable
-fun ColorGrid_land(modifier: Modifier = Modifier, seqS : String, onButtonClick: (Int) -> Unit, highlightedIndex: Int? = null) {
+fun ColorGrid_land(onButtonClick: (Int) -> Unit, highlightedIndex: Int? = null) {
     val baseColors = listOf(boxR, boxG, boxB, boxM, boxY, boxC)
     val colors = baseColors.mapIndexed { index, color ->
         if (index == highlightedIndex) color.copy(alpha = 0.5f) else color
@@ -437,7 +400,7 @@ fun ColorGrid_land(modifier: Modifier = Modifier, seqS : String, onButtonClick: 
 }
 
 @Composable
-fun SequenceText_port(modifier: Modifier = Modifier, seqS : String, playState : Boolean) {
+fun SequenceText_port(seqS : String, playState : Boolean) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -459,7 +422,7 @@ fun SequenceText_port(modifier: Modifier = Modifier, seqS : String, playState : 
 }
 
 @Composable
-fun SequenceText_land(modifier: Modifier = Modifier, seqS : String, playState : Boolean) {
+fun SequenceText_land(seqS : String, playState : Boolean) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -481,7 +444,7 @@ fun SequenceText_land(modifier: Modifier = Modifier, seqS : String, playState : 
 }
 
 @Composable
-fun StartButton_port(modifier: Modifier = Modifier, playState : Boolean, startGame : () -> Unit) {
+fun StartButton_port(playState : Boolean, startGame : () -> Unit) {
     Row (
         modifier = Modifier
             .fillMaxWidth(),
@@ -501,7 +464,7 @@ fun StartButton_port(modifier: Modifier = Modifier, playState : Boolean, startGa
 }
 
 @Composable
-fun StartButton_land(modifier: Modifier = Modifier, playState : Boolean, startGame : () -> Unit) {
+fun StartButton_land(playState : Boolean, startGame : () -> Unit) {
     Row (
         modifier = Modifier
             .fillMaxWidth()
@@ -522,7 +485,7 @@ fun StartButton_land(modifier: Modifier = Modifier, playState : Boolean, startGa
 }
 
 @Composable
-fun ActionButtons_port(modifier: Modifier = Modifier, seqS : String, pauseGame: () -> Unit, errorState : Boolean, pauseState : Boolean, showingState : Boolean, playState : Boolean, navController: NavController, onAddGame: () -> Unit) {
+fun ActionButtons_port(pauseGame: () -> Unit, errorState : Boolean, pauseState : Boolean, showingState : Boolean, playState : Boolean, navController: NavController, onAddGame: () -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -538,7 +501,7 @@ fun ActionButtons_port(modifier: Modifier = Modifier, seqS : String, pauseGame: 
             enabled = showingState
         ) {
             Text(stringResource(if(pauseState) R.string.resumeBtn else R.string.pauseBtn))
-        };
+        }
 
         Button(
             onClick = {
@@ -554,12 +517,12 @@ fun ActionButtons_port(modifier: Modifier = Modifier, seqS : String, pauseGame: 
             enabled = playState
         ) {
             Text(stringResource(R.string.finePartitaBtn))
-        };
+        }
     }
 }
 
 @Composable
-fun ActionButtons_land(modifier: Modifier = Modifier, seqS : String, pauseGame: () -> Unit, errorState : Boolean, pauseState : Boolean, showingState : Boolean, playState : Boolean, navController: NavController,  onAddGame: () -> Unit) {
+fun ActionButtons_land(pauseGame: () -> Unit, errorState : Boolean, pauseState : Boolean, showingState : Boolean, playState : Boolean, navController: NavController,  onAddGame: () -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -583,7 +546,7 @@ fun ActionButtons_land(modifier: Modifier = Modifier, seqS : String, pauseGame: 
             enabled = playState
         ) {
             Text(stringResource(R.string.finePartitaBtn))
-        };
+        }
     }
 
     Row(
@@ -609,7 +572,7 @@ fun ActionButtons_land(modifier: Modifier = Modifier, seqS : String, pauseGame: 
 }
 
 @Composable
-fun ErrorPanel(modifier : Modifier = Modifier, errorState : Boolean) {
+fun ErrorPanel(errorState : Boolean) {
     Row(
         modifier = Modifier
             .fillMaxSize()

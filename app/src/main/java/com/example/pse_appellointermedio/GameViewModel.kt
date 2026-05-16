@@ -12,6 +12,8 @@ import androidx.compose.runtime.neverEqualPolicy
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.SavedStateHandle
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.cancel
 
 //ViewModel used to hold sequences, states and coroutines
 //Used to make coroutines survive recomposition
@@ -35,6 +37,14 @@ class GameViewModel(application : Application, private val savedStateHandle: Sav
     var hIndex by mutableStateOf<Int?>(null)
     var errorState by mutableStateOf(false)
 
+    //Sound stuff
+    val soundPlayer = SoundPlayer(application.applicationContext)
+    fun playColorAudio(index : Int) {
+        if(index in 0 .. 6) {
+            soundPlayer.playSound(index)
+        }
+    }
+
     //SQL db
     val dm = DataManager(application.applicationContext)
     //Record list (to make the db entries be observable by Compose)
@@ -56,7 +66,7 @@ class GameViewModel(application : Application, private val savedStateHandle: Sav
         get() = savedStateHandle.get<Int>("seqLength_save") ?: 0
         set(value) { savedStateHandle["seqLength_save"] = value }
     var inputLength_save : Int
-        get() = savedStateHandle.get<Int>("inputLenght_save") ?: 0
+        get() = savedStateHandle.get<Int>("inputLength_save") ?: 0
         set(value) { savedStateHandle["inputLength_save"] = value }
     var showSeq_save : Boolean
         get() = savedStateHandle.get<Boolean>("showSeq_save") ?: false
@@ -65,15 +75,16 @@ class GameViewModel(application : Application, private val savedStateHandle: Sav
         get() = savedStateHandle.get<Boolean>("startGame_save") ?: false
         set(value) { savedStateHandle["startGame_save"] = value }
     var pauseState_save : Boolean
-        get() = savedStateHandle.get<Boolean>("savedState_save") ?: false
-        set(value) { savedStateHandle["savedState_save"] = value }
+        get() = savedStateHandle.get<Boolean>("pauseState_save") ?: false
+        set(value) { savedStateHandle["pauseState_save"] = value }
     var errorState_save : Boolean
         get() = savedStateHandle.get<Boolean>("errorState_save") ?: false
         set(value) { savedStateHandle["errorState_save"] = value }
 
     //Starts coroutine for adding a color to the generated sequence and showing it all
-    fun startSequence(playColorAudio : (Int) -> Unit) {
-        viewModelScope.launch {
+    private var job : Job? = null
+    fun startSequence() {
+        job = viewModelScope.launch {
             //The delay here serves as a way to prevent the input sequence from being deleted as soon as it's typed out
             delay(500)
             inputLength = 0
@@ -101,7 +112,7 @@ class GameViewModel(application : Application, private val savedStateHandle: Sav
     }
 
     //Reads the generated sequence without adding any color
-    fun readSequence(playColorAudio : (Int) -> Unit) {
+    fun readSequence() {
         viewModelScope.launch {
             inputLength = 0
             sequenceString = ""
@@ -120,6 +131,13 @@ class GameViewModel(application : Application, private val savedStateHandle: Sav
         }
     }
 
+    //Stops coroutine
+    fun stopSequence() {
+        job?.cancel()
+        job = null
+        isShowingSequence = false
+    }
+
     //Used to pause coroutine
     private suspend fun waitIfPaused() {
         while (isPaused) {
@@ -129,7 +147,7 @@ class GameViewModel(application : Application, private val savedStateHandle: Sav
     }
 
     //Adds new color to the user's input sequence
-    fun addAndCheckColor(i : Int, playColorAudio: (Int) -> Unit) {
+    fun addAndCheckColor(i : Int) {
         if(!isShowingSequence && proposedSequence.isNotEmpty() && !errorState) {
             sequenceString = appendColorToSequence(i, sequenceString)
             inputLength++
@@ -143,7 +161,7 @@ class GameViewModel(application : Application, private val savedStateHandle: Sav
             //If the partial string matches continue, otherwise go into error state
             if(sequenceString == proposedSequence.subSequence(0, sequenceString.length).toString()) {
                 if(inputLength == sequenceLength)
-                    startSequence(playColorAudio)
+                    startSequence()
                 //Log.i("seq", "match")
             } else {
                 //Error screen
@@ -171,6 +189,7 @@ class GameViewModel(application : Application, private val savedStateHandle: Sav
         hasRestarted = false
         isShowingSequence = false
         hasStartedGame = false
+        isPaused = false
         hIndex = null
         errorState = false
     }
@@ -217,5 +236,11 @@ class GameViewModel(application : Application, private val savedStateHandle: Sav
         startGame_save = false
         pauseState_save = false
         errorState_save = false
+    }
+
+    //Clean-up
+    override fun onCleared() {
+        super.onCleared()
+        soundPlayer.release()
     }
 }

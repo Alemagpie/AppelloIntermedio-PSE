@@ -39,7 +39,7 @@ import androidx.navigation.NavController
 import com.example.pse_appellointermedio.ui.theme.startGameBtn
 
 @Composable
-fun ListUI(modifier: Modifier = Modifier, navController: NavController, viewModel: GameViewModel) {
+fun ListUI(navController: NavController, viewModel: GameViewModel) {
 
     val configuration = LocalConfiguration.current
     if (configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
@@ -50,13 +50,11 @@ fun ListUI(modifier: Modifier = Modifier, navController: NavController, viewMode
             horizontalArrangement = Arrangement.SpaceEvenly
         ) {
             GamesList_land(
-                Modifier,
                 navController,
                 viewModel
             )
 
             StartButton_land(
-                Modifier,
                 navController,
                 viewModel
             )
@@ -75,7 +73,6 @@ fun ListUI(modifier: Modifier = Modifier, navController: NavController, viewMode
                 horizontalArrangement = Arrangement.Center
             ) {
                 GamesList_port(
-                    Modifier,
                     navController,
                     viewModel
                 )
@@ -86,7 +83,6 @@ fun ListUI(modifier: Modifier = Modifier, navController: NavController, viewMode
                     .fillMaxWidth()
             ) {
                 StartButton_port(
-                    Modifier,
                     navController,
                     viewModel
                 )
@@ -97,7 +93,7 @@ fun ListUI(modifier: Modifier = Modifier, navController: NavController, viewMode
 }
 
 @Composable
-fun GamesList_port(modifier: Modifier = Modifier, navController: NavController, viewModel : GameViewModel) {
+fun GamesList_port(navController: NavController, viewModel : GameViewModel) {
     val gamesList = viewModel.gamesList
     LazyColumn (
         modifier = Modifier
@@ -115,7 +111,7 @@ fun GamesList_port(modifier: Modifier = Modifier, navController: NavController, 
 }
 
 @Composable
-fun GamesList_land(modifier: Modifier = Modifier,navController: NavController, viewModel : GameViewModel) {
+fun GamesList_land(navController: NavController, viewModel : GameViewModel) {
     val gamesList = viewModel.gamesList
     LazyColumn (
         modifier = Modifier
@@ -133,7 +129,7 @@ fun GamesList_land(modifier: Modifier = Modifier,navController: NavController, v
 }
 
 @Composable
-fun GamesListItem(modifier: Modifier = Modifier,navController: NavController, record : GameRecord) {
+fun GamesListItem(navController: NavController, record : GameRecord) {
     val pressedCount = record.errorIndex.toString()
     val pressedSeq = styleStringFromLength(record.errorIndex + 1, shortenSequence(s= record.sequence))
     Row(
@@ -161,7 +157,7 @@ fun GamesListItem(modifier: Modifier = Modifier,navController: NavController, re
 }
 
 @Composable
-fun StartButton_port(modifier: Modifier = Modifier, navController: NavController, viewModel : GameViewModel) {
+fun StartButton_port(navController: NavController, viewModel : GameViewModel) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -186,24 +182,28 @@ fun StartButton_port(modifier: Modifier = Modifier, navController: NavController
 }
 
 @Composable
-fun StartButton_land(modifier: Modifier = Modifier, navController: NavController, viewModel : GameViewModel) {
-    Button(
-        onClick = {
-            viewModel.resetState()
-            navController.navigate("colorGrid")
-        },
-        colors = ButtonDefaults.buttonColors(containerColor = startGameBtn),
-        modifier = Modifier.size(
-            width = startGameButtonWidth_land,
-            height = startGameButtonHeight_land
-        )
+fun StartButton_land(navController: NavController, viewModel : GameViewModel) {
+    Row(
+        modifier = Modifier.padding(top= startGameButtonTopPadding_land)
     ) {
-        Text(stringResource(R.string.startBtn))
+        Button(
+            onClick = {
+                viewModel.resetState()
+                navController.navigate("colorGrid")
+            },
+            colors = ButtonDefaults.buttonColors(containerColor = startGameBtn),
+            modifier = Modifier.size(
+                width = startGameButtonWidth_land,
+                height = startGameButtonHeight_land
+            )
+        ) {
+            Text(stringResource(R.string.startBtn))
+        }
     }
 }
 
 @Composable
-fun LanguageIcon(modifier : Modifier = Modifier) {
+fun LanguageIcon() {
     val context = LocalContext.current
     val prefs = context.getSharedPreferences("settings", Context.MODE_PRIVATE)
     var currentLang by rememberSaveable { mutableStateOf(prefs.getString("lang", "en") ?: "en") }
