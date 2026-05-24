@@ -58,6 +58,8 @@ fun MainUI(navController: NavController, viewModel: GameViewModel) {
         //Back can be called after an error or while inputting sequence, so the two cases must be distinguished
         val length = if(viewModel.errorState) viewModel.inputLength - 1 else viewModel.inputLength
         addGame(length, viewModel.proposedSequence)
+        viewModel.resetState()
+        viewModel.resetRecoveryState()
         navController.navigate("gamesList") {
             popUpTo("gamesList") { inclusive = false }
         }
@@ -65,10 +67,14 @@ fun MainUI(navController: NavController, viewModel: GameViewModel) {
 
     // Restarts the coroutine if the game was left while the app was showing the sequence
     LaunchedEffect(Unit) {
-        if (viewModel.isShowingSequence && viewModel.shouldRecover() && !viewModel.hasRestarted) {
-            viewModel.hasRestarted = true
-            viewModel.readSequence()
+        if(viewModel.shouldRecover()) {
+            viewModel.loadRecoveryState()
+            if (viewModel.isShowingSequence && !viewModel.hasRestarted) {
+                viewModel.hasRestarted = true
+                viewModel.readSequence()
+            }
         }
+
     }
 
     //Error panel is drawn behind everything else regardless of the orientation

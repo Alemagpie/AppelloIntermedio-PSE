@@ -20,7 +20,12 @@ fun NavGraph(modifier: Modifier = Modifier) {
     LaunchedEffect(Unit) {
         if (viewModel.shouldRecover()) {
             viewModel.loadRecoveryState()
-            navController.navigate("colorGrid")
+
+            if(viewModel.hasStartedGame) {
+                navController.navigate("colorGrid")
+            } else {
+                navController.navigate("gamesList")
+            }
         }
     }
 

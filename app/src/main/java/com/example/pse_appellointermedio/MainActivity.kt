@@ -49,8 +49,6 @@ val listSizeY_port = 300.dp
 val listItemPadding = 15.dp
 val langIconSize = 40.dp
 val langIconPadding = 20.dp
-val detailTopPadding_port = 240.dp
-val detailTopPadding_land = 90.dp
 val detailSidePadding_port = 30.dp
 val detailSidePadding_land = 50.dp
 
@@ -84,9 +82,11 @@ class MainActivity : ComponentActivity() {
             //User killed the activity, so clear the saved states
             viewModel.resetRecoveryState()
             //Extra check needed because otherwise the sequence would be read on top of the already existing coroutine
-        } else if (!isChangingConfigurations) {
-            //Android is killing the activity, save variables and setup for recovery on reopening
-            viewModel.setRecoveryState()
+        } else {
+            if (!isChangingConfigurations) {
+                //Android is killing the activity, save variables and setup for recovery on reopening
+                viewModel.setRecoveryState()
+            }
         }
     }
 }

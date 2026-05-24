@@ -28,7 +28,7 @@ class GameViewModel(application : Application, private val savedStateHandle: Sav
     var inputLength by mutableIntStateOf(0)
 
     //States
-    //Only true if the app was killed by the
+    //Only true if the app was killed by the user
     var hasRestarted by mutableStateOf(false)
     var isPaused by mutableStateOf(false)
     //Acts as a mutex for receiving user input
@@ -116,9 +116,11 @@ class GameViewModel(application : Application, private val savedStateHandle: Sav
 
     //Reads the generated sequence without adding any color
     fun readSequence() {
-        viewModelScope.launch {
+        job = viewModelScope.launch {
             inputLength = 0
             sequenceString = ""
+
+            delay(500)
 
             isShowingSequence = true
             val s = proposedSequence.replace(", ", "")
@@ -226,7 +228,7 @@ class GameViewModel(application : Application, private val savedStateHandle: Sav
         hasStartedGame = startGame_save
         isPaused = pauseState_save
         errorState = errorState_save
-        hasRestarted = hasRestarted_save
+        hasRestarted = false
     }
 
     //Resets the save
