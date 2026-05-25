@@ -83,6 +83,10 @@ class GameViewModel(application : Application, private val savedStateHandle: Sav
     var hasRestarted_save: Boolean
         get() = savedStateHandle.get<Boolean>("hasRestarted_save") ?: false
         set(value) { savedStateHandle["hasRestarted_save"] = value }
+    var wasRotated_save : Boolean
+        get() = savedStateHandle.get<Boolean>("hasRestarted_save") ?: false
+        set(value) { savedStateHandle["hasRestarted_save"] = value }
+
 
     //Starts coroutine for adding a color to the generated sequence and showing it all
     private var job : Job? = null
@@ -205,7 +209,7 @@ class GameViewModel(application : Application, private val savedStateHandle: Sav
     }
 
     //Saves state to recover
-    fun setRecoveryState() {
+    fun setRecoveryState(rotation : Boolean) {
         seqString_save = sequenceString
         propString_save = proposedSequence
         seqLength_save = sequenceLength
@@ -215,6 +219,7 @@ class GameViewModel(application : Application, private val savedStateHandle: Sav
         pauseState_save = isPaused
         errorState_save = errorState
         hasRestarted_save = hasRestarted
+        wasRotated_save = rotation
     }
 
     //Sets back the app's state from the save
@@ -229,6 +234,7 @@ class GameViewModel(application : Application, private val savedStateHandle: Sav
         isPaused = pauseState_save
         errorState = errorState_save
         hasRestarted = false
+        wasRotated_save = false
     }
 
     //Resets the save
@@ -244,6 +250,7 @@ class GameViewModel(application : Application, private val savedStateHandle: Sav
         errorState_save = false
         hasRestarted = false
         hasRestarted_save = false
+        wasRotated_save = false
     }
 
     //Clean-up

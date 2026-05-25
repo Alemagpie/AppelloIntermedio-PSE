@@ -50,14 +50,10 @@ fun MainUI(navController: NavController, viewModel: GameViewModel) {
         }
     }
 
-    //Handles both kinds of input: system button and gesture
-    BackHandler {
+    fun endGame() {
         //Cancel coroutine
         viewModel.stopSequence()
 
-        //Back can be called after an error or while inputting sequence, so the two cases must be distinguished
-        val length = if(viewModel.errorState) viewModel.inputLength - 1 else viewModel.inputLength
-        addGame(length, viewModel.proposedSequence)
         viewModel.resetState()
         viewModel.resetRecoveryState()
         navController.navigate("gamesList") {
@@ -65,12 +61,21 @@ fun MainUI(navController: NavController, viewModel: GameViewModel) {
         }
     }
 
+    //Handles both kinds of input: system button and gesture
+    BackHandler {
+        //Back can be called after an error or while inputting sequence, so the two cases must be distinguished
+        val length = if(viewModel.errorState) viewModel.inputLength - 1 else viewModel.inputLength
+        addGame(length, viewModel.proposedSequence)
+        endGame()
+    }
+
     // Restarts the coroutine if the game was left while the app was showing the sequence
     LaunchedEffect(Unit) {
         if(viewModel.shouldRecover()) {
             viewModel.loadRecoveryState()
-            if (viewModel.isShowingSequence && !viewModel.hasRestarted) {
+            if (viewModel.isShowingSequence && !viewModel.hasRestarted && !viewModel.wasRotated_save) {
                 viewModel.hasRestarted = true
+                viewModel.stopSequence()
                 viewModel.readSequence()
             }
         }
@@ -127,7 +132,10 @@ fun MainUI(navController: NavController, viewModel: GameViewModel) {
                     viewModel.isShowingSequence,
                     viewModel.hasStartedGame,
                     navController,
-                    onAddGame = { addGame(viewModel.inputLength, viewModel.proposedSequence) }
+                    onAddGame = {
+                        addGame(viewModel.inputLength, viewModel.proposedSequence)
+                        endGame()
+                    }
                 )
             }
         }
@@ -169,7 +177,10 @@ fun MainUI(navController: NavController, viewModel: GameViewModel) {
                 viewModel.isShowingSequence,
                 viewModel.hasStartedGame,
                 navController,
-                onAddGame = { addGame(viewModel.inputLength, viewModel.proposedSequence) }
+                onAddGame = {
+                    addGame(viewModel.inputLength, viewModel.proposedSequence)
+                    endGame()
+                }
             )
         }
     }
@@ -512,9 +523,6 @@ fun ActionButtons_port(pauseGame: () -> Unit, errorState : Boolean, pauseState :
         Button(
             onClick = {
                 onAddGame()
-                navController.navigate("gamesList") {
-                    popUpTo("gamesList") { inclusive = false }
-                }
             },
             colors = ButtonDefaults.buttonColors(containerColor = fineBtn),
             modifier = Modifier
@@ -538,9 +546,6 @@ fun ActionButtons_land(pauseGame: () -> Unit, errorState : Boolean, pauseState :
         Button(
             onClick = {
                 onAddGame()
-                navController.navigate("gamesList") {
-                    popUpTo("gamesList") { inclusive = false }
-                }
             },
             colors = ButtonDefaults.buttonColors(containerColor = fineBtn),
             modifier = Modifier

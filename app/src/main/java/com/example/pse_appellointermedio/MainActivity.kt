@@ -83,10 +83,8 @@ class MainActivity : ComponentActivity() {
             viewModel.resetRecoveryState()
             //Extra check needed because otherwise the sequence would be read on top of the already existing coroutine
         } else {
-            if (!isChangingConfigurations) {
-                //Android is killing the activity, save variables and setup for recovery on reopening
-                viewModel.setRecoveryState()
-            }
+            //Android is killing the activity, save variables and setup for recovery on reopening
+            viewModel.setRecoveryState(isChangingConfigurations)
         }
     }
 }
