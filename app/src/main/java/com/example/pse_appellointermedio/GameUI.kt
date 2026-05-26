@@ -71,15 +71,16 @@ fun MainUI(navController: NavController, viewModel: GameViewModel) {
 
     // Restarts the coroutine if the game was left while the app was showing the sequence
     LaunchedEffect(Unit) {
-        if(viewModel.shouldRecover()) {
-            viewModel.loadRecoveryState()
-            if (viewModel.isShowingSequence && !viewModel.hasRestarted && !viewModel.wasRotated_save) {
-                viewModel.hasRestarted = true
-                viewModel.stopSequence()
-                viewModel.readSequence()
+        if (viewModel.isNewInstance) {
+            viewModel.isNewInstance = false
+            if (viewModel.shouldRecover()) {
+                viewModel.loadRecoveryState()
+                if (viewModel.isShowingSequence) {
+                    viewModel.hasRestarted = true
+                    viewModel.readSequence()
+                }
             }
         }
-
     }
 
     //Error panel is drawn behind everything else regardless of the orientation

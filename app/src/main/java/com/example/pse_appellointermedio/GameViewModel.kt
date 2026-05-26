@@ -53,6 +53,7 @@ class GameViewModel(application : Application, private val savedStateHandle: Sav
     //Save state to recover activity when android kills the app to free resources
     //I decided to use savedStateHandle instead of sharedPreferences since
     //it's slightly easier to use and is meant for temporary state saving
+    var isNewInstance = true
     var userClosed : Boolean
         get() = savedStateHandle.get<Boolean>("userClosed") ?: false
         set(value) { savedStateHandle["userClosed"] = value }
@@ -119,7 +120,7 @@ class GameViewModel(application : Application, private val savedStateHandle: Sav
     }
 
     //Reads the generated sequence without adding any color
-    fun readSequence() {
+    fun readSequence(start : Int = 0) {
         job = viewModelScope.launch {
             inputLength = 0
             sequenceString = ""
